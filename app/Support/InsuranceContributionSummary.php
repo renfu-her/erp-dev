@@ -11,7 +11,7 @@ class InsuranceContributionSummary
         }
 
         try {
-            $schedule = $schedule ?? InsuranceSchedule::fromStorage();
+            $schedule = $schedule ?? InsuranceSchedule::resolve();
         } catch (\Throwable $e) {
             return null;
         }

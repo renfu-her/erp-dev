@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\InsuranceBracket;
 use Illuminate\Support\Str;
 
 class InsuranceSchedule
@@ -10,6 +11,40 @@ class InsuranceSchedule
      * @var array<int, array<string, mixed>>
      */
     protected array $brackets = [];
+
+    public static function resolve(?string $path = null): self
+    {
+        if ($schedule = self::fromDatabase()) {
+            return $schedule;
+        }
+
+        return self::fromStorage($path);
+    }
+
+    public static function fromDatabase(): ?self
+    {
+        $records = InsuranceBracket::orderBy('grade')->get();
+
+        if ($records->isEmpty()) {
+            return null;
+        }
+
+        $brackets = $records->map(function (InsuranceBracket $bracket) {
+            return [
+                'label' => $bracket->label,
+                'grade' => $bracket->grade,
+                'labor_employee_local' => $bracket->labor_employee_local,
+                'labor_employer_local' => $bracket->labor_employer_local,
+                'labor_employee_foreign' => $bracket->labor_employee_foreign,
+                'labor_employer_foreign' => $bracket->labor_employer_foreign,
+                'health_employee' => $bracket->health_employee,
+                'health_employer' => $bracket->health_employer,
+                'pension_employer' => $bracket->pension_employer,
+            ];
+        })->values()->all();
+
+        return new self($brackets);
+    }
 
     public static function fromStorage(?string $path = null): self
     {

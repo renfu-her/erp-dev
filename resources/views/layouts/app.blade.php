@@ -45,22 +45,22 @@
 
                         $backendMenu = [
                             [
-                                'label' => '後台總覽',
+                                'label' => '後臺預覽',
                                 'route' => 'backend.dashboard',
                                 'active' => ['backend.dashboard'],
                                 'permissions' => ['backend.access'],
                             ],
                             [
-                                'label' => 'HR 控制台',
+                                'label' => 'HR 工作臺',
                                 'route' => 'backend.hr.dashboard',
                                 'active' => ['backend.hr.dashboard'],
                                 'permissions' => ['backend.access'],
                             ],
                             [
-                                'label' => '出勤管理',
-                                'route' => 'backend.attendance.index',
-                                'active' => ['backend.attendance.*'],
-                                'permissions' => ['backend.access', 'attendance.manage'],
+                                'label' => '公司管理',
+                                'route' => 'backend.companies.index',
+                                'active' => ['backend.companies.*'],
+                                'permissions' => ['backend.access', 'company.manage'],
                             ],
                             [
                                 'label' => '部門管理',
@@ -75,6 +75,12 @@
                                 'permissions' => ['backend.access', 'company.manage'],
                             ],
                             [
+                                'label' => '出勤管理',
+                                'route' => 'backend.attendance.index',
+                                'active' => ['backend.attendance.*'],
+                                'permissions' => ['backend.access', 'attendance.manage'],
+                            ],
+                            [
                                 'label' => '假勤審核',
                                 'route' => 'backend.leave-requests.index',
                                 'active' => ['backend.leave-requests.*'],
@@ -87,21 +93,15 @@
                                 'permissions' => ['backend.access', 'attendance.manage'],
                             ],
                             [
-                                'label' => '公司管理',
-                                'route' => 'backend.companies.index',
-                                'active' => ['backend.companies.*'],
-                                'permissions' => ['backend.access', 'company.manage'],
-                            ],
-                            [
-                                'label' => '員工管理',
-                                'route' => 'backend.employees.index',
-                                'active' => ['backend.employees.*'],
-                                'permissions' => ['backend.access', 'company.manage'],
-                            ],
-                            [
-                                'label' => '薪資概況',
+                                'label' => '薪資管理',
                                 'route' => 'backend.payroll.index',
                                 'active' => ['backend.payroll.*'],
+                                'permissions' => ['backend.access', 'payroll.view'],
+                            ],
+                            [
+                                'label' => '勞健保級距',
+                                'route' => 'backend.insurance-brackets.index',
+                                'active' => ['backend.insurance-brackets.*'],
                                 'permissions' => ['backend.access', 'payroll.manage'],
                             ],
                         ];

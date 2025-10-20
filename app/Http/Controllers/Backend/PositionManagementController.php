@@ -185,10 +185,14 @@ class PositionManagementController extends Controller
             return $this->insuranceSchedule;
         }
 
-        try {
-            $this->insuranceSchedule = InsuranceSchedule::fromStorage();
-        } catch (\Throwable $e) {
-            $this->insuranceSchedule = null;
+        $this->insuranceSchedule = InsuranceSchedule::fromDatabase();
+
+        if (! $this->insuranceSchedule) {
+            try {
+                $this->insuranceSchedule = InsuranceSchedule::fromStorage();
+            } catch (\Throwable $e) {
+                $this->insuranceSchedule = null;
+            }
         }
 
         $this->insuranceScheduleLoaded = true;

@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\CompanyManagementController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepartmentManagementController;
 use App\Http\Controllers\Backend\EmployeeManagementController;
+use App\Http\Controllers\Backend\InsuranceBracketController;
 use App\Http\Controllers\Backend\HumanResourceController as BackendHumanResourceController;
 use App\Http\Controllers\Backend\LeaveRequestManagementController;
 use App\Http\Controllers\Backend\LeaveTypeManagementController;
@@ -44,7 +45,18 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'permission:back
 
     Route::get('attendance', [AttendanceManagementController::class, 'index'])->name('attendance.index');
     Route::post('attendance', [AttendanceManagementController::class, 'store'])->name('attendance.store');
-    Route::get('payroll', [PayrollController::class, 'index'])->name('payroll.index');
+    Route::get('payroll', [PayrollController::class, 'index'])
+        ->middleware('permission:payroll.view')
+        ->name('payroll.index');
+    Route::post('payroll/periods', [PayrollController::class, 'storePeriod'])
+        ->middleware('permission:payroll.manage')
+        ->name('payroll.periods.store');
+    Route::post('payroll/runs', [PayrollController::class, 'storeRun'])
+        ->middleware('permission:payroll.manage')
+        ->name('payroll.runs.store');
+    Route::resource('insurance-brackets', InsuranceBracketController::class)
+        ->except(['show'])
+        ->middleware('permission:payroll.manage');
 
     Route::resource('companies', CompanyManagementController::class)->except(['show']);
     Route::resource('departments', DepartmentManagementController::class)->except(['show']);
