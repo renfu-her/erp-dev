@@ -64,11 +64,16 @@
                         <th scope="col">公司</th>
                         <th scope="col">職等</th>
                         <th scope="col">薪資等級</th>
+                        <th scope="col">薪資／級距</th>
+                        <th scope="col">勞健保參考</th>
                         <th scope="col">主管職</th>
                         <th scope="col" class="text-end">操作</th>
                     </tr>
                 </thead>
                 <tbody>
+                    @php
+                        $formatMoney = fn (?int $value) => is_null($value) ? '—' : number_format($value);
+                    @endphp
                     @forelse ($positions as $position)
                         <tr>
                             <td class="fw-semibold text-body">{{ $position->title }}</td>
@@ -83,6 +88,28 @@
                                 @endif
                             </td>
                             <td class="text-muted small">{{ $position->grade ?? '—' }}</td>
+                            <td class="text-muted small">
+                                @if ($position->reference_salary || $position->insurance_grade)
+                                    <div>{{ $position->reference_salary ? number_format($position->reference_salary) . ' 元' : '—' }}</div>
+                                    @if (data_get($position->insurance_snapshot, 'grade_label'))
+                                        <div class="small text-muted">{{ data_get($position->insurance_snapshot, 'grade_label') }}</div>
+                                    @elseif ($position->insurance_grade)
+                                        <div class="small text-muted">級距 {{ number_format($position->insurance_grade) }}</div>
+                                    @endif
+                                @else
+                                    —
+                                @endif
+                            </td>
+                            <td class="text-muted small">
+                                @if ($position->insurance_snapshot)
+                                    <div>勞保：員 {{ $formatMoney(data_get($position->insurance_snapshot, 'labor_local.employee')) }}／雇
+                                        {{ $formatMoney(data_get($position->insurance_snapshot, 'labor_local.employer')) }}</div>
+                                    <div>健保：員 {{ $formatMoney(data_get($position->insurance_snapshot, 'health.employee')) }}／雇
+                                        {{ $formatMoney(data_get($position->insurance_snapshot, 'health.employer')) }}</div>
+                                @else
+                                    —
+                                @endif
+                            </td>
                             <td>
                                 @if ($position->is_managerial)
                                     <span class="badge bg-success">是</span>
@@ -104,7 +131,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">目前尚未建立任何職位。</td>
+                            <td colspan="9" class="text-center text-muted py-4">目前尚未建立任何職位。</td>
                         </tr>
                     @endforelse
                 </tbody>

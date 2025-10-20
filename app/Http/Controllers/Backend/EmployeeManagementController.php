@@ -11,7 +11,7 @@ use App\Models\Department;
 use App\Models\Employee;
 use App\Models\LeaveType;
 use App\Models\Position;
-use App\Support\InsuranceSchedule;
+use App\Support\InsuranceContributionSummary;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -274,59 +274,7 @@ class EmployeeManagementController extends Controller
     {
         $baseSalary = optional($employee->activeContract)->base_salary;
 
-        if (is_null($baseSalary)) {
-            return null;
-        }
-
-        try {
-            $schedule = InsuranceSchedule::fromStorage();
-        } catch (\Throwable $e) {
-            return null;
-        }
-
-        $bracket = $schedule->findBracketForSalary((float) $baseSalary);
-
-        if (! $bracket) {
-            return null;
-        }
-
-        $laborEmployee = $bracket['labor_employee_local'] ?? null;
-        $laborEmployer = $bracket['labor_employer_local'] ?? null;
-        $healthEmployee = $bracket['health_employee'] ?? null;
-        $healthEmployer = $bracket['health_employer'] ?? null;
-
-        return [
-            'base_salary' => (float) $baseSalary,
-            'grade_label' => $bracket['label'],
-            'grade_value' => $bracket['grade'],
-            'labor_local' => [
-                'employee' => $laborEmployee,
-                'employer' => $laborEmployer,
-                'total' => $this->sumContributions($laborEmployee, $laborEmployer),
-            ],
-            'labor_foreign' => [
-                'employee' => $bracket['labor_employee_foreign'] ?? null,
-                'employer' => $bracket['labor_employer_foreign'] ?? null,
-            ],
-            'health' => [
-                'employee' => $healthEmployee,
-                'employer' => $healthEmployer,
-                'total' => $this->sumContributions($healthEmployee, $healthEmployer),
-            ],
-            'pension' => [
-                'employer' => $bracket['pension_employer'] ?? null,
-                'rate' => '6%',
-            ],
-        ];
-    }
-
-    protected function sumContributions(?int $employeeShare, ?int $employerShare): ?int
-    {
-        if (is_null($employeeShare) && is_null($employerShare)) {
-            return null;
-        }
-
-        return (int) (($employeeShare ?? 0) + ($employerShare ?? 0));
+        return InsuranceContributionSummary::make($baseSalary);
     }
 
     protected function validateEmployee(Request $request, ?int $employeeId = null): array

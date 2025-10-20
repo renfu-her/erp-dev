@@ -115,4 +115,19 @@ class InsuranceSchedule
 
         return $this->brackets[array_key_last($this->brackets)];
     }
+
+    public function findBracketByGrade(int $grade): ?array
+    {
+        if (empty($this->brackets)) {
+            return null;
+        }
+
+        foreach ($this->brackets as $bracket) {
+            if (($bracket['grade'] ?? null) === $grade) {
+                return $bracket;
+            }
+        }
+
+        return null;
+    }
 }

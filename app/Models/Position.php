@@ -17,12 +17,18 @@ class Position extends Model
         'position_level_id',
         'title',
         'grade',
+        'reference_salary',
+        'insurance_grade',
+        'insurance_snapshot',
         'is_managerial',
         'metadata',
     ];
 
     protected $casts = [
         'is_managerial' => 'boolean',
+        'reference_salary' => 'decimal:2',
+        'insurance_grade' => 'integer',
+        'insurance_snapshot' => 'array',
         'metadata' => 'array',
     ];
 
