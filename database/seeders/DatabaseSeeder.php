@@ -11,6 +11,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AccessControlSeeder::class,
             PositionLevelSeeder::class,
+            LeaveTypeSeeder::class,
             CompanyDataSeeder::class,
             AdminUserSeeder::class,
             FrontendUserSeeder::class,

@@ -24,6 +24,14 @@ class EmployeeLeaveController extends Controller
                 ->withErrors(['leave_request' => '尚未綁定員工資料，無法提交請假申請。']);
         }
 
+        $leaveTypesCollection = LeaveType::whereIn('name', SubmitLeaveRequest::ALLOWED_LEAVE_NAMES)
+            ->get()
+            ->keyBy('name');
+
+        $leaveTypes = collect(SubmitLeaveRequest::ALLOWED_LEAVE_NAMES)
+            ->map(fn ($name) => $leaveTypesCollection->get($name))
+            ->filter();
+
         $delegates = Employee::query()
             ->where('company_id', $employee->company_id)
             ->where('id', '<>', $employee->id)
@@ -40,7 +48,7 @@ class EmployeeLeaveController extends Controller
             ->get();
 
         return view('frontend.hr.leave-request', [
-            'leaveTypes' => LeaveType::orderBy('name')->get(),
+            'leaveTypes' => $leaveTypes,
             'employee' => $employee,
             'delegates' => $delegates,
         ]);
