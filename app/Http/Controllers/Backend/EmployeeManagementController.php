@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SubmitLeaveRequest;
 use App\Models\ActivityLog;
 use App\Models\ApprovalRequest;
 use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
+use App\Models\LeaveType;
+use Carbon\Carbon;
 use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,6 +20,39 @@ use Illuminate\Validation\Rule;
 class EmployeeManagementController extends Controller
 {
     protected array $statuses = ['active', 'inactive', 'onboarding', 'blocked', 'terminated'];
+
+    protected function calculateAnnualLeaveEntitlement(Employee $employee, int $year): float
+    {
+        if (! $employee->hired_at) {
+            return 0;
+        }
+
+        $referenceDate = Carbon::create($year, 1, 1);
+
+        if ($employee->hired_at->greaterThan($referenceDate)) {
+            return 0;
+        }
+
+        $monthsOfService = $employee->hired_at->diffInMonths($referenceDate);
+
+        if ($monthsOfService < 6) {
+            return 0;
+        }
+
+        $yearsOfService = intdiv($monthsOfService, 12);
+
+        if ($yearsOfService < 1) {
+            return 3;
+        }
+
+        return match (true) {
+            $yearsOfService < 2 => 7,
+            $yearsOfService < 3 => 10,
+            $yearsOfService < 5 => 14,
+            $yearsOfService < 10 => 15,
+            default => min(15 + ($yearsOfService - 10), 30),
+        };
+    }
 
     public function index(Request $request): View
     {
@@ -53,11 +89,24 @@ class EmployeeManagementController extends Controller
 
     public function create(): View
     {
+        $employee = new Employee();
+
+        $leaveTypes = LeaveType::whereIn('name', SubmitLeaveRequest::ALLOWED_LEAVE_NAMES)
+            ->get()
+            ->sortBy(function (LeaveType $type) {
+                return array_search($type->name, SubmitLeaveRequest::ALLOWED_LEAVE_NAMES, true);
+            })
+            ->values();
+
         return view('backend.employees.create', [
+            'employee' => $employee,
             'companies' => Company::orderBy('name')->get(),
             'departments' => Department::orderBy('name')->get(),
             'positions' => Position::orderBy('title')->get(),
             'statuses' => $this->statuses,
+            'leaveTypes' => $leaveTypes,
+            'leaveSummaries' => collect(),
+            'currentYear' => now()->year,
         ]);
     }
 
@@ -83,12 +132,50 @@ class EmployeeManagementController extends Controller
 
     public function edit(Employee $employee): View
     {
+        $leaveTypes = LeaveType::whereIn('name', SubmitLeaveRequest::ALLOWED_LEAVE_NAMES)
+            ->get()
+            ->sortBy(function (LeaveType $type) {
+                return array_search($type->name, SubmitLeaveRequest::ALLOWED_LEAVE_NAMES, true);
+            })
+            ->values();
+
+        $currentYear = now()->year;
+
+        $balances = $employee->leaveBalances()
+            ->where('year', $currentYear)
+            ->whereIn('leave_type_id', $leaveTypes->pluck('id'))
+            ->get()
+            ->keyBy('leave_type_id');
+
+        $leaveSummaries = $leaveTypes->map(function (LeaveType $type) use ($balances, $employee, $currentYear) {
+            $balance = $balances->get($type->id);
+
+            $entitled = $balance->entitled ?? ($type->default_quota ?? 0);
+            if ($type->code === 'ANNUAL') {
+                $entitled = $balance->entitled ?? $this->calculateAnnualLeaveEntitlement($employee, $currentYear);
+            }
+            $taken = $balance->taken ?? 0;
+            $remaining = $balance->remaining ?? ($entitled - $taken);
+
+            return [
+                'type' => $type,
+                'entitled' => max($entitled, 0),
+                'taken' => max($taken, 0),
+                'remaining' => max($remaining, 0),
+                'pay' => $type->rules['pay'] ?? null,
+                'notes' => $type->rules['notes'] ?? null,
+            ];
+        });
+
         return view('backend.employees.edit', [
             'employee' => $employee,
             'companies' => Company::orderBy('name')->get(),
             'departments' => Department::orderBy('name')->get(),
             'positions' => Position::orderBy('title')->get(),
             'statuses' => $this->statuses,
+            'leaveTypes' => $leaveTypes,
+            'leaveSummaries' => $leaveSummaries,
+            'currentYear' => $currentYear,
         ]);
     }
 

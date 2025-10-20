@@ -21,7 +21,6 @@ class SubmitLeaveRequest extends FormRequest
         '普通傷病假',
         '公傷病假',
         '生理假',
-        '家庭照顧假',
         '育嬰留職停薪假',
     ];
 
