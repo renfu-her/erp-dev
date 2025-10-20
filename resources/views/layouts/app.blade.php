@@ -106,104 +106,321 @@
                             ],
                         ];
 
-                        $canSeeBackend = auth()->check() && auth()->user()->can('backend.access');
+                        $backendGroups = [
+                            [
+                                'title' => '人事系統 (HR)',
+                                'items' => $backendMenu,
+                            ],
+                            [
+                                'title' => 'CRM 系統',
+                                'items' => [
+                                    [
+                                        'label' => '客戶總覽',
+                                        'status' => 'coming_soon',
+                                    ],
+                                    [
+                                        'label' => '銷售漏斗',
+                                        'status' => 'coming_soon',
+                                    ],
+                                    [
+                                        'label' => '客服中心',
+                                        'status' => 'coming_soon',
+                                    ],
+                                ],
+                            ],
+                            [
+                                'title' => '進銷存系統',
+                                'items' => [
+                                    [
+                                        'label' => '採購管理',
+                                        'status' => 'coming_soon',
+                                    ],
+                                    [
+                                        'label' => '庫存盤點',
+                                        'status' => 'coming_soon',
+                                    ],
+                                    [
+                                        'label' => '出貨物流',
+                                        'status' => 'coming_soon',
+                                    ],
+                                ],
+                            ],
+                        ];
+
+                        $user = auth()->user();
+                        $canSeeBackend = $user?->hasPermission('backend.access') ?? false;
+                        $canSeeFrontend = $user?->hasPermission('frontend.portal.access') ?? false;
+                        $portalMode = session('portal_mode');
+
+                        if (! $portalMode || $portalMode === 'auto') {
+                            $portalMode = match (true) {
+                                $canSeeBackend => 'backend',
+                                $canSeeFrontend => 'employee',
+                                default => 'guest',
+                            };
+                        }
+
+                        $showFrontend = $portalMode !== 'backend';
+                        $showBackend = $canSeeBackend && $portalMode !== 'employee';
                     @endphp
 
                     <nav class="app-sidebar-nav flex-column gap-4 small">
-                        <div>
-                            <div class="text-uppercase text-muted fw-semibold small mb-2 px-2">前臺入口</div>
-                            <div class="d-flex flex-column gap-1">
-                                @foreach ($frontendMenu as $item)
-                                    @php
-                                        $patterns = (array) ($item['active'] ?? $item['route']);
-                                        $isActive = false;
-                                        foreach ($patterns as $pattern) {
-                                            if (request()->routeIs($pattern)) {
-                                                $isActive = true;
-                                                break;
-                                            }
-                                        }
-
-                                        $permissions = $item['permissions'] ?? [];
-                                        $hasAccess = true;
-                                        $badgeText = empty($permissions) ? '公開' : '可存取';
-                                        $badgeClass = empty($permissions) ? 'badge-public' : 'badge-access';
-                                        if (! empty($permissions)) {
-                                            if (!auth()->check()) {
-                                                $hasAccess = false;
-                                                $badgeText = '需登入';
-                                                $badgeClass = 'badge-login';
-                                            } else {
-                                                $hasAccess = collect($permissions)->every(fn ($permission) => auth()->user()->can($permission));
-                                                $badgeText = $hasAccess ? '可存取' : '權限不足';
-                                                $badgeClass = $hasAccess ? 'badge-access' : 'badge-locked';
-                                            }
-                                        }
-
-                                        $linkClasses = 'nav-link px-3 py-2 rounded d-flex flex-column align-items-start gap-1';
-                                        if ($isActive) {
-                                            $linkClasses .= ' active';
-                                        }
-                                        if (! $hasAccess && ! empty($permissions)) {
-                                            $linkClasses .= ' locked';
-                                        }
-
-                                        $url = route($item['route']);
-                                    @endphp
-                                    <a class="{{ $linkClasses }}" href="{{ $hasAccess ? $url : '#!' }}" @if (! $hasAccess && ! empty($permissions)) aria-disabled="true" data-target-url="{{ $url }}" @endif>
-                                        <div class="d-flex w-100 align-items-center justify-content-between">
-                                            <span class="fw-semibold">{{ $item['label'] }}</span>
-                                            <span class="badge requirement-badge {{ $badgeClass }}">{{ $badgeText }}</span>
-                                        </div>
-                                    </a>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        @if ($canSeeBackend)
+                        @if ($showBackend)
                             <div>
-                                <div class="text-uppercase text-muted fw-semibold small mb-2 px-2">後台模組</div>
-                                <div class="d-flex flex-column gap-1">
-                                    @php
-                                        $visibleBackendItems = 0;
-                                    @endphp
-                                    @foreach ($backendMenu as $item)
+                                <div class="text-uppercase text-muted fw-semibold small mb-2 px-2">企業模組</div>
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach ($backendGroups as $index => $group)
                                         @php
-                                            $patterns = (array) ($item['active'] ?? $item['route']);
-                                            $isActive = false;
-                                            foreach ($patterns as $pattern) {
-                                                if (request()->routeIs($pattern)) {
-                                                    $isActive = true;
-                                                    break;
+                                            $collapseId = 'sidebar-group-' . $index . '-' . \Illuminate\Support\Str::slug($group['title'] ?? 'group');
+                                            $displayItems = [];
+                                            $groupHasActive = false;
+
+                                            foreach ($group['items'] as $item) {
+                                                $status = $item['status'] ?? 'active';
+                                                if ($status === 'coming_soon') {
+                                                    $displayItems[] = [
+                                                        'displayType' => 'coming_soon',
+                                                        'label' => $item['label'] ?? '即將推出',
+                                                    ];
+                                                    continue;
+                                                }
+
+                                                if (empty($item['route'])) {
+                                                    continue;
+                                                }
+
+                                                $patterns = (array) ($item['active'] ?? $item['route']);
+                                                $isActive = false;
+                                                foreach ($patterns as $pattern) {
+                                                    if (request()->routeIs($pattern)) {
+                                                        $isActive = true;
+                                                        break;
+                                                    }
+                                                }
+
+                                                $permissions = $item['permissions'] ?? ['backend.access'];
+                                                $hasBackendAccess = $user ? $user->hasPermission('backend.access') : false;
+                                                $hasSpecificAccess = $user ? collect($permissions)->every(fn ($permission) => $user->hasPermission($permission)) : false;
+                                                $hasAccess = $hasBackendAccess || $hasSpecificAccess;
+
+                                                $displayItems[] = [
+                                                    'displayType' => 'link',
+                                                    'label' => $item['label'],
+                                                    'route' => $item['route'],
+                                                    'hasAccess' => $hasAccess,
+                                                    'hasSpecificAccess' => $hasSpecificAccess,
+                                                    'isActive' => $isActive,
+                                                ];
+
+                                                if ($isActive) {
+                                                    $groupHasActive = true;
                                                 }
                                             }
 
-                                            $permissions = $item['permissions'] ?? ['backend.access'];
-                                            $user = auth()->user();
-                                            $hasAccess = $user ? collect($permissions)->every(fn ($permission) => $user->can($permission)) : false;
-                                            if (! $hasAccess) {
+                                            if (empty($displayItems)) {
                                                 continue;
                                             }
-                                            $visibleBackendItems++;
 
-                                            $linkClasses = 'nav-link px-3 py-2 rounded d-flex flex-column align-items-start gap-1';
-                                            if ($isActive) {
-                                                $linkClasses .= ' active';
+                                            $toggleClasses = 'app-sidebar-toggle px-2 py-2 d-flex align-items-center justify-content-between w-100 text-start collapsed';
+                                            if ($groupHasActive) {
+                                                $toggleClasses .= ' has-active';
                                             }
-
-                                            $url = route($item['route']);
                                         @endphp
-                                        <a class="{{ $linkClasses }}" href="{{ $url }}">
-                                            <div class="d-flex w-100 align-items-center justify-content-between">
-                                                <span class="fw-semibold">{{ $item['label'] }}</span>
-                                                <span class="badge requirement-badge badge-access">具權限</span>
-                                            </div>
-                                        </a>
-                                    @endforeach
+                                        <div class="app-sidebar-group">
+                                            <button
+                                                type="button"
+                                                class="{{ $toggleClasses }}"
+                                                data-bs-toggle="collapse"
+                                                data-bs-target="#{{ $collapseId }}"
+                                                aria-controls="{{ $collapseId }}"
+                                                aria-expanded="false"
+                                            >
+                                                <span class="fw-semibold small">{{ $group['title'] }}</span>
+                                                <span class="app-sidebar-chevron"></span>
+                                            </button>
+                                            <div class="collapse" id="{{ $collapseId }}">
+                                                <div class="d-flex flex-column gap-1 mt-2">
+                                                    @foreach ($displayItems as $item)
+                                                        @if (($item['displayType'] ?? 'link') === 'coming_soon')
+                                                            <span class="nav-link px-3 py-2 rounded d-flex align-items-center justify-content-between soon" aria-disabled="true">
+                                                                <span class="fw-semibold">{{ $item['label'] }}</span>
+                                                                <span class="badge requirement-badge badge-soon">即將推出</span>
+                                                            </span>
+                                                        @else
+                                                            @php
+                                                                $hasAccess = $item['hasAccess'] ?? false;
+                                                                $hasSpecific = $item['hasSpecificAccess'] ?? false;
+                                                                $isActive = $item['isActive'] ?? false;
+                                                                $linkClasses = 'nav-link px-3 py-2 rounded d-flex align-items-center justify-content-between';
+                                                                if ($isActive && $hasAccess) {
+                                                                    $linkClasses .= ' active';
+                                                                }
+                                                                if (! $hasAccess) {
+                                                                    $linkClasses .= ' locked';
+                                                                }
 
-                                    @if ($visibleBackendItems === 0)
-                                        <div class="px-3 py-2 text-muted small">尚未開通任何後台模組權限。</div>
-                                    @endif
+                                                                if ($hasSpecific) {
+                                                                    $badgeText = '具權限';
+                                                                    $badgeClass = 'badge-access';
+                                                                } elseif ($hasAccess) {
+                                                                    $badgeText = '後台入口';
+                                                                    $badgeClass = 'badge-partial';
+                                                                } else {
+                                                                    $badgeText = '權限不足';
+                                                                    $badgeClass = 'badge-locked';
+                                                                }
+
+                                                                $url = $hasAccess ? route($item['route']) : '#!';
+                                                            @endphp
+                                                            <a class="{{ $linkClasses }}" href="{{ $url }}" @if (! $hasAccess) aria-disabled="true" @endif>
+                                                                <span class="fw-semibold">{{ $item['label'] }}</span>
+                                                                <span class="badge requirement-badge {{ $badgeClass }}">{{ $badgeText }}</span>
+                                                            </a>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endif
+
+                        @if ($showFrontend)
+                            @php
+                                $frontendCollapseId = 'sidebar-frontend-menu';
+                                $frontendDisplayItems = [];
+                                $frontendHasActive = false;
+
+                                foreach ($frontendMenu as $item) {
+                                    $patterns = (array) ($item['active'] ?? $item['route']);
+                                    $isActive = false;
+                                    foreach ($patterns as $pattern) {
+                                        if (request()->routeIs($pattern)) {
+                                            $isActive = true;
+                                            break;
+                                        }
+                                    }
+
+                                    $permissions = $item['permissions'] ?? [];
+                                    $hasAccess = true;
+                                    $badgeText = empty($permissions) ? '公開' : '可存取';
+                                    $badgeClass = empty($permissions) ? 'badge-public' : 'badge-access';
+                                    if (! empty($permissions)) {
+                                        if (!auth()->check()) {
+                                            $hasAccess = false;
+                                            $badgeText = '需登入';
+                                            $badgeClass = 'badge-login';
+                                        } else {
+                                            $hasAccess = collect($permissions)->every(fn ($permission) => auth()->user()->hasPermission($permission));
+                                            $badgeText = $hasAccess ? '可存取' : '權限不足';
+                                            $badgeClass = $hasAccess ? 'badge-access' : 'badge-locked';
+                                        }
+                                    }
+
+                                    if ($isActive) {
+                                        $frontendHasActive = true;
+                                    }
+
+                                    $frontendDisplayItems[] = [
+                                        'label' => $item['label'],
+                                        'route' => $item['route'],
+                                        'hasAccess' => $hasAccess,
+                                        'badgeText' => $badgeText,
+                                        'badgeClass' => $badgeClass,
+                                        'isActive' => $isActive,
+                                        'requiresAccess' => ! empty($permissions),
+                                    ];
+                                }
+
+                                $frontendToggleClasses = 'app-sidebar-toggle px-2 py-2 d-flex align-items-center justify-content-between w-100 text-start collapsed';
+                                if ($frontendHasActive) {
+                                    $frontendToggleClasses .= ' has-active';
+                                }
+                            @endphp
+                            <div class="app-sidebar-group mt-3">
+                                <button
+                                    type="button"
+                                    class="{{ $frontendToggleClasses }}"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#{{ $frontendCollapseId }}"
+                                    aria-controls="{{ $frontendCollapseId }}"
+                                    aria-expanded="false"
+                                >
+                                    <span class="fw-semibold small">前臺入口</span>
+                                    <span class="app-sidebar-chevron"></span>
+                                </button>
+                                <div class="collapse" id="{{ $frontendCollapseId }}">
+                                    <div class="d-flex flex-column gap-1 mt-2">
+                                        @foreach ($frontendDisplayItems as $item)
+                                            @php
+                                                $linkClasses = 'nav-link px-3 py-2 rounded d-flex align-items-center justify-content-between';
+                                                if ($item['isActive'] && $item['hasAccess']) {
+                                                    $linkClasses .= ' active';
+                                                }
+                                                if (! $item['hasAccess'] && $item['requiresAccess']) {
+                                                    $linkClasses .= ' locked';
+                                                }
+                                                $url = $item['hasAccess'] ? route($item['route']) : '#!';
+                                            @endphp
+                                            <a class="{{ $linkClasses }}" href="{{ $url }}" @if (! $item['hasAccess'] && $item['requiresAccess']) aria-disabled="true" data-target-url="{{ route($item['route']) }}" @endif>
+                                                <span class="fw-semibold">{{ $item['label'] }}</span>
+                                                <span class="badge requirement-badge {{ $item['badgeClass'] }}">{{ $item['badgeText'] }}</span>
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @elseif ($portalMode === 'backend' && $canSeeFrontend)
+                            @php
+                                $frontendQuickCollapseId = 'sidebar-frontend-quick-links';
+                                $quickLinks = [
+                                    ['label' => '前臺首頁', 'route' => 'frontend.home', 'patterns' => ['frontend.home']],
+                                    ['label' => '員工自助服務', 'route' => 'frontend.hr.self-service', 'patterns' => ['frontend.hr.self-service']],
+                                    ['label' => '請假申請', 'route' => 'frontend.hr.leave-request', 'patterns' => ['frontend.hr.leave-request']],
+                                ];
+                                $quickHasActive = false;
+                                foreach ($quickLinks as $link) {
+                                    foreach ($link['patterns'] as $pattern) {
+                                        if (request()->routeIs($pattern)) {
+                                            $quickHasActive = true;
+                                            break 2;
+                                        }
+                                    }
+                                }
+                                $quickToggleClasses = 'app-sidebar-toggle px-2 py-2 d-flex align-items-center justify-content-between w-100 text-start collapsed';
+                                if ($quickHasActive) {
+                                    $quickToggleClasses .= ' has-active';
+                                }
+                            @endphp
+                            <div class="app-sidebar-group mt-3">
+                                <button
+                                    type="button"
+                                    class="{{ $quickToggleClasses }}"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#{{ $frontendQuickCollapseId }}"
+                                    aria-controls="{{ $frontendQuickCollapseId }}"
+                                    aria-expanded="false"
+                                >
+                                    <span class="fw-semibold small">前臺快速連結</span>
+                                    <span class="app-sidebar-chevron"></span>
+                                </button>
+                                <div class="collapse" id="{{ $frontendQuickCollapseId }}">
+                                    <div class="d-flex flex-column gap-1 mt-2">
+                                        @foreach ($quickLinks as $link)
+                                            @php
+                                                $isActive = collect($link['patterns'])->contains(fn ($pattern) => request()->routeIs($pattern));
+                                                $linkClasses = 'nav-link px-3 py-2 rounded d-flex align-items-center justify-content-between';
+                                                if ($isActive) {
+                                                    $linkClasses .= ' active';
+                                                }
+                                            @endphp
+                                            <a class="{{ $linkClasses }}" href="{{ route($link['route']) }}">
+                                                <span class="fw-semibold">{{ $link['label'] }}</span>
+                                                <span class="badge requirement-badge badge-access">切換</span>
+                                            </a>
+                                        @endforeach
+                                    </div>
                                 </div>
                             </div>
                         @endif

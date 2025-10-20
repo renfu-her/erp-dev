@@ -35,6 +35,39 @@ body {
     color: #adb5bd;
 }
 
+.app-sidebar-toggle {
+    background: transparent;
+    border: 0;
+    color: #495057;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    transition: color 0.2s ease;
+}
+
+.app-sidebar-toggle:hover,
+.app-sidebar-toggle:focus {
+    color: #0d6efd;
+    outline: none;
+}
+
+.app-sidebar-toggle.has-active {
+    color: #0d6efd;
+}
+
+.app-sidebar-chevron {
+    display: inline-block;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.2s ease;
+}
+
+.app-sidebar-toggle.collapsed .app-sidebar-chevron {
+    transform: rotate(-45deg);
+}
+
 .requirement-badge {
     font-size: 0.7rem;
     border-radius: 999px;
@@ -58,6 +91,26 @@ body {
 
 .requirement-badge.badge-locked {
     background-color: #e9ecef;
+    color: #6c757d;
+}
+
+.requirement-badge.badge-partial {
+    background-color: #ffe8cc;
+    color: #995200;
+}
+
+.requirement-badge.badge-soon {
+    background-color: #f1f3f5;
+    color: #495057;
+}
+
+.app-sidebar-nav .nav-link.soon {
+    color: #6c757d;
+    cursor: not-allowed;
+}
+
+.app-sidebar-nav .nav-link.soon:hover {
+    background-color: rgba(73, 80, 87, 0.08);
     color: #6c757d;
 }
 
