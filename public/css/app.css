@@ -26,6 +26,41 @@ body {
     color: #fff;
 }
 
+.app-sidebar-nav .nav-link.locked {
+    color: #adb5bd;
+}
+
+.app-sidebar-nav .nav-link.locked:hover {
+    background-color: rgba(173, 181, 189, 0.1);
+    color: #adb5bd;
+}
+
+.requirement-badge {
+    font-size: 0.7rem;
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+}
+
+.requirement-badge.badge-public {
+    background-color: #e7f1ff;
+    color: #0d6efd;
+}
+
+.requirement-badge.badge-access {
+    background-color: #d1e7dd;
+    color: #0f5132;
+}
+
+.requirement-badge.badge-login {
+    background-color: #fff3cd;
+    color: #664d03;
+}
+
+.requirement-badge.badge-locked {
+    background-color: #e9ecef;
+    color: #6c757d;
+}
+
 .app-topbar {
     position: sticky;
     top: 0;

@@ -21,37 +21,192 @@
                         </a>
                     </div>
 
-                    <nav class="app-sidebar-nav flex-column gap-3 small">
+                    @php
+                        $frontendMenu = [
+                            [
+                                'label' => '前臺首頁',
+                                'route' => 'frontend.home',
+                                'active' => ['frontend.home'],
+                                'permissions' => [],
+                            ],
+                            [
+                                'label' => '員工自助服務',
+                                'route' => 'frontend.hr.self-service',
+                                'active' => ['frontend.hr.self-service'],
+                                'permissions' => ['frontend.portal.access'],
+                            ],
+                            [
+                                'label' => '請假申請',
+                                'route' => 'frontend.hr.leave-request',
+                                'active' => ['frontend.hr.leave-request'],
+                                'permissions' => ['frontend.leave.submit'],
+                            ],
+                        ];
+
+                        $backendMenu = [
+                            [
+                                'label' => '後台總覽',
+                                'route' => 'backend.dashboard',
+                                'active' => ['backend.dashboard'],
+                                'permissions' => ['backend.access'],
+                            ],
+                            [
+                                'label' => 'HR 控制台',
+                                'route' => 'backend.hr.dashboard',
+                                'active' => ['backend.hr.dashboard'],
+                                'permissions' => ['backend.access'],
+                            ],
+                            [
+                                'label' => '出勤管理',
+                                'route' => 'backend.attendance.index',
+                                'active' => ['backend.attendance.*'],
+                                'permissions' => ['backend.access', 'attendance.manage'],
+                            ],
+                            [
+                                'label' => '部門管理',
+                                'route' => 'backend.departments.index',
+                                'active' => ['backend.departments.*'],
+                                'permissions' => ['backend.access', 'company.manage'],
+                            ],
+                            [
+                                'label' => '職位管理',
+                                'route' => 'backend.positions.index',
+                                'active' => ['backend.positions.*'],
+                                'permissions' => ['backend.access', 'company.manage'],
+                            ],
+                            [
+                                'label' => '假勤審核',
+                                'route' => 'backend.leave-requests.index',
+                                'active' => ['backend.leave-requests.*'],
+                                'permissions' => ['backend.access', 'attendance.manage'],
+                            ],
+                            [
+                                'label' => '假別設定',
+                                'route' => 'backend.leave-types.index',
+                                'active' => ['backend.leave-types.*'],
+                                'permissions' => ['backend.access', 'attendance.manage'],
+                            ],
+                            [
+                                'label' => '公司管理',
+                                'route' => 'backend.companies.index',
+                                'active' => ['backend.companies.*'],
+                                'permissions' => ['backend.access', 'company.manage'],
+                            ],
+                            [
+                                'label' => '員工管理',
+                                'route' => 'backend.employees.index',
+                                'active' => ['backend.employees.*'],
+                                'permissions' => ['backend.access', 'company.manage'],
+                            ],
+                            [
+                                'label' => '薪資概況',
+                                'route' => 'backend.payroll.index',
+                                'active' => ['backend.payroll.*'],
+                                'permissions' => ['backend.access', 'payroll.manage'],
+                            ],
+                        ];
+
+                        $canSeeBackend = auth()->check() && auth()->user()->can('backend.access');
+                    @endphp
+
+                    <nav class="app-sidebar-nav flex-column gap-4 small">
                         <div>
                             <div class="text-uppercase text-muted fw-semibold small mb-2 px-2">前臺入口</div>
-                            <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('frontend.home') ? 'active' : '' }}" href="{{ route('frontend.home') }}">
-                                前臺首頁
-                            </a>
-                            @can('frontend.portal.access')
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('frontend.hr.self-service') ? 'active' : '' }}" href="{{ route('frontend.hr.self-service') }}">
-                                    員工自助服務
-                                </a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('frontend.hr.leave-request') ? 'active' : '' }}" href="{{ route('frontend.hr.leave-request') }}">
-                                    請假申請
-                                </a>
-                            @endcan
+                            <div class="d-flex flex-column gap-1">
+                                @foreach ($frontendMenu as $item)
+                                    @php
+                                        $patterns = (array) ($item['active'] ?? $item['route']);
+                                        $isActive = false;
+                                        foreach ($patterns as $pattern) {
+                                            if (request()->routeIs($pattern)) {
+                                                $isActive = true;
+                                                break;
+                                            }
+                                        }
+
+                                        $permissions = $item['permissions'] ?? [];
+                                        $hasAccess = true;
+                                        $badgeText = empty($permissions) ? '公開' : '可存取';
+                                        $badgeClass = empty($permissions) ? 'badge-public' : 'badge-access';
+                                        if (! empty($permissions)) {
+                                            if (!auth()->check()) {
+                                                $hasAccess = false;
+                                                $badgeText = '需登入';
+                                                $badgeClass = 'badge-login';
+                                            } else {
+                                                $hasAccess = collect($permissions)->every(fn ($permission) => auth()->user()->can($permission));
+                                                $badgeText = $hasAccess ? '可存取' : '權限不足';
+                                                $badgeClass = $hasAccess ? 'badge-access' : 'badge-locked';
+                                            }
+                                        }
+
+                                        $linkClasses = 'nav-link px-3 py-2 rounded d-flex flex-column align-items-start gap-1';
+                                        if ($isActive) {
+                                            $linkClasses .= ' active';
+                                        }
+                                        if (! $hasAccess && ! empty($permissions)) {
+                                            $linkClasses .= ' locked';
+                                        }
+
+                                        $url = route($item['route']);
+                                    @endphp
+                                    <a class="{{ $linkClasses }}" href="{{ $hasAccess ? $url : '#!' }}" @if (! $hasAccess && ! empty($permissions)) aria-disabled="true" data-target-url="{{ $url }}" @endif>
+                                        <div class="d-flex w-100 align-items-center justify-content-between">
+                                            <span class="fw-semibold">{{ $item['label'] }}</span>
+                                            <span class="badge requirement-badge {{ $badgeClass }}">{{ $badgeText }}</span>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
                         </div>
 
-                        @can('backend.access')
+                        @if ($canSeeBackend)
                             <div>
                                 <div class="text-uppercase text-muted fw-semibold small mb-2 px-2">後台模組</div>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.dashboard') ? 'active' : '' }}" href="{{ route('backend.dashboard') }}">後台總覽</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.hr.dashboard') ? 'active' : '' }}" href="{{ route('backend.hr.dashboard') }}">HR 控制台</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.attendance.*') ? 'active' : '' }}" href="{{ route('backend.attendance.index') }}">出勤管理</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.departments.*') ? 'active' : '' }}" href="{{ route('backend.departments.index') }}">部門管理</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.positions.*') ? 'active' : '' }}" href="{{ route('backend.positions.index') }}">職位管理</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.leave-requests.*') ? 'active' : '' }}" href="{{ route('backend.leave-requests.index') }}">假勤審核</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.leave-types.*') ? 'active' : '' }}" href="{{ route('backend.leave-types.index') }}">假別設定</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.companies.*') ? 'active' : '' }}" href="{{ route('backend.companies.index') }}">公司管理</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.employees.*') ? 'active' : '' }}" href="{{ route('backend.employees.index') }}">員工管理</a>
-                                <a class="nav-link px-3 py-2 rounded {{ request()->routeIs('backend.payroll.*') ? 'active' : '' }}" href="{{ route('backend.payroll.index') }}">薪資概況</a>
+                                <div class="d-flex flex-column gap-1">
+                                    @php
+                                        $visibleBackendItems = 0;
+                                    @endphp
+                                    @foreach ($backendMenu as $item)
+                                        @php
+                                            $patterns = (array) ($item['active'] ?? $item['route']);
+                                            $isActive = false;
+                                            foreach ($patterns as $pattern) {
+                                                if (request()->routeIs($pattern)) {
+                                                    $isActive = true;
+                                                    break;
+                                                }
+                                            }
+
+                                            $permissions = $item['permissions'] ?? ['backend.access'];
+                                            $user = auth()->user();
+                                            $hasAccess = $user ? collect($permissions)->every(fn ($permission) => $user->can($permission)) : false;
+                                            if (! $hasAccess) {
+                                                continue;
+                                            }
+                                            $visibleBackendItems++;
+
+                                            $linkClasses = 'nav-link px-3 py-2 rounded d-flex flex-column align-items-start gap-1';
+                                            if ($isActive) {
+                                                $linkClasses .= ' active';
+                                            }
+
+                                            $url = route($item['route']);
+                                        @endphp
+                                        <a class="{{ $linkClasses }}" href="{{ $url }}">
+                                            <div class="d-flex w-100 align-items-center justify-content-between">
+                                                <span class="fw-semibold">{{ $item['label'] }}</span>
+                                                <span class="badge requirement-badge badge-access">具權限</span>
+                                            </div>
+                                        </a>
+                                    @endforeach
+
+                                    @if ($visibleBackendItems === 0)
+                                        <div class="px-3 py-2 text-muted small">尚未開通任何後台模組權限。</div>
+                                    @endif
+                                </div>
                             </div>
-                        @endcan
+                        @endif
                     </nav>
 
                     <div class="mt-auto pt-4 border-top">
