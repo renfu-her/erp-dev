@@ -10,8 +10,9 @@ use App\Models\Company;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\LeaveType;
-use Carbon\Carbon;
 use App\Models\Position;
+use App\Support\InsuranceSchedule;
+use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -107,6 +108,7 @@ class EmployeeManagementController extends Controller
             'leaveTypes' => $leaveTypes,
             'leaveSummaries' => collect(),
             'currentYear' => now()->year,
+            'insuranceSummary' => null,
         ]);
     }
 
@@ -132,6 +134,8 @@ class EmployeeManagementController extends Controller
 
     public function edit(Employee $employee): View
     {
+        $employee->load('activeContract');
+
         $leaveTypes = LeaveType::whereIn('name', SubmitLeaveRequest::ALLOWED_LEAVE_NAMES)
             ->get()
             ->sortBy(function (LeaveType $type) {
@@ -167,6 +171,8 @@ class EmployeeManagementController extends Controller
             ];
         });
 
+        $insuranceSummary = $this->prepareInsuranceSummary($employee);
+
         return view('backend.employees.edit', [
             'employee' => $employee,
             'companies' => Company::orderBy('name')->get(),
@@ -176,6 +182,7 @@ class EmployeeManagementController extends Controller
             'leaveTypes' => $leaveTypes,
             'leaveSummaries' => $leaveSummaries,
             'currentYear' => $currentYear,
+            'insuranceSummary' => $insuranceSummary,
         ]);
     }
 
@@ -261,6 +268,65 @@ class EmployeeManagementController extends Controller
         ]);
 
         return redirect()->route('backend.employees.index')->with('status', "員工 {$employee->employee_no} 已解除阻擋。");
+    }
+
+    protected function prepareInsuranceSummary(Employee $employee): ?array
+    {
+        $baseSalary = optional($employee->activeContract)->base_salary;
+
+        if (is_null($baseSalary)) {
+            return null;
+        }
+
+        try {
+            $schedule = InsuranceSchedule::fromStorage();
+        } catch (\Throwable $e) {
+            return null;
+        }
+
+        $bracket = $schedule->findBracketForSalary((float) $baseSalary);
+
+        if (! $bracket) {
+            return null;
+        }
+
+        $laborEmployee = $bracket['labor_employee_local'] ?? null;
+        $laborEmployer = $bracket['labor_employer_local'] ?? null;
+        $healthEmployee = $bracket['health_employee'] ?? null;
+        $healthEmployer = $bracket['health_employer'] ?? null;
+
+        return [
+            'base_salary' => (float) $baseSalary,
+            'grade_label' => $bracket['label'],
+            'grade_value' => $bracket['grade'],
+            'labor_local' => [
+                'employee' => $laborEmployee,
+                'employer' => $laborEmployer,
+                'total' => $this->sumContributions($laborEmployee, $laborEmployer),
+            ],
+            'labor_foreign' => [
+                'employee' => $bracket['labor_employee_foreign'] ?? null,
+                'employer' => $bracket['labor_employer_foreign'] ?? null,
+            ],
+            'health' => [
+                'employee' => $healthEmployee,
+                'employer' => $healthEmployer,
+                'total' => $this->sumContributions($healthEmployee, $healthEmployer),
+            ],
+            'pension' => [
+                'employer' => $bracket['pension_employer'] ?? null,
+                'rate' => '6%',
+            ],
+        ];
+    }
+
+    protected function sumContributions(?int $employeeShare, ?int $employerShare): ?int
+    {
+        if (is_null($employeeShare) && is_null($employerShare)) {
+            return null;
+        }
+
+        return (int) (($employeeShare ?? 0) + ($employerShare ?? 0));
     }
 
     protected function validateEmployee(Request $request, ?int $employeeId = null): array

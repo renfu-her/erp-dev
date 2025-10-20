@@ -17,5 +17,6 @@
         'pageTitle' => '編輯員工',
         'pageDescription' => '更新員工基本資訊，調整後將影響人力資源相關流程。',
         'currentYear' => $currentYear,
+        'insuranceSummary' => $insuranceSummary,
     ])
 @endsection

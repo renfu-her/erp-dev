@@ -5,6 +5,8 @@
     $pageTitle = $pageTitle ?? ($isEdit ? '編輯員工' : '新增員工');
     $pageDescription = $pageDescription ?? ($isEdit ? '更新員工基本資訊，調整後將影響人力資源相關流程。' : '輸入員工基本資料，建立後即可透過其他模組進行進一步設定。');
     $currentYear = $currentYear ?? now()->year;
+    $insuranceSummary = $insuranceSummary ?? null;
+    $baseSalary = $insuranceSummary['base_salary'] ?? optional($employee->activeContract)->base_salary;
 @endphp
 
 <div class="row justify-content-center">
@@ -175,6 +177,78 @@
                     </div>
                 </div>
             </div>
+        @endif
+
+        @if ($isEdit)
+            @if ($insuranceSummary)
+                @php
+                    $formatMoney = fn ($value) => is_null($value) ? '—' : number_format($value);
+                @endphp
+                <div class="card shadow-sm mt-4">
+                    <div class="card-header d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
+                        <div>
+                            <h3 class="card-title h5 mb-0">勞健保參考級距</h3>
+                            <p class="text-muted small mb-0">依目前契約月薪推估之投保級距與雇主/員工負擔金額。</p>
+                        </div>
+                        <div class="d-flex flex-column flex-md-row gap-2 text-md-end">
+                            <div>
+                                <span class="text-muted small d-block">契約月薪</span>
+                                <span class="fw-semibold">{{ number_format($insuranceSummary['base_salary']) }} 元</span>
+                            </div>
+                            <div class="vr d-none d-md-block"></div>
+                            <div>
+                                <span class="text-muted small d-block">投保級距</span>
+                                <span class="fw-semibold">{{ $insuranceSummary['grade_label'] }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-sm table-hover mb-0 align-middle">
+                                <thead class="table-light small text-muted text-uppercase">
+                                    <tr>
+                                        <th scope="col" class="text-nowrap">項目</th>
+                                        <th scope="col" class="text-end text-nowrap">員工負擔</th>
+                                        <th scope="col" class="text-end text-nowrap">雇主負擔</th>
+                                        <th scope="col" class="text-end text-nowrap">合計</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-nowrap">勞保（本國籍）</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['labor_local']['employee']) }} 元</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['labor_local']['employer']) }} 元</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['labor_local']['total']) }} 元</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap">健保</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['health']['employee']) }} 元</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['health']['employer']) }} 元</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['health']['total']) }} 元</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-nowrap">勞退提繳（6%）</td>
+                                        <td class="text-end text-nowrap">—</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['pension']['employer']) }} 元</td>
+                                        <td class="text-end text-nowrap">{{ $formatMoney($insuranceSummary['pension']['employer']) }} 元</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="card-footer bg-white text-muted small">
+                            若員工為外籍身份，勞保建議改採員工 {{ $formatMoney($insuranceSummary['labor_foreign']['employee'] ?? null) }} 元、雇主 {{ $formatMoney($insuranceSummary['labor_foreign']['employer'] ?? null) }} 元之負擔標準。
+                        </div>
+                    </div>
+                </div>
+            @elseif ($baseSalary)
+                <div class="alert alert-warning mt-4 mb-0">
+                    無法載入勞健保級距資料，請確認投保級距表是否存在於 <code>storage/salary_table.json</code>。
+                </div>
+            @else
+                <div class="alert alert-info mt-4 mb-0">
+                    尚未設定有效的契約基本薪資，暫無勞健保級距參考數值。
+                </div>
+            @endif
         @endif
     </div>
 </div>

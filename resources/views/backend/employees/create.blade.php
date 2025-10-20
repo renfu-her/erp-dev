@@ -11,6 +11,7 @@
         'statuses' => $statuses,
         'leaveTypes' => $leaveTypes,
         'leaveSummaries' => $leaveSummaries,
+        'insuranceSummary' => null,
         'formAction' => route('backend.employees.store'),
         'formMethod' => 'POST',
         'submitLabel' => '建立員工',
