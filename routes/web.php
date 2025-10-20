@@ -54,9 +54,9 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'permission:back
     Route::post('payroll/runs', [PayrollController::class, 'storeRun'])
         ->middleware('permission:payroll.manage')
         ->name('payroll.runs.store');
-    Route::resource('insurance-brackets', InsuranceBracketController::class)
-        ->except(['show'])
-        ->middleware('permission:payroll.manage');
+    Route::get('insurance-brackets', [InsuranceBracketController::class, 'index'])
+        ->middleware('permission:payroll.view')
+        ->name('insurance-brackets.index');
 
     Route::resource('companies', CompanyManagementController::class)->except(['show']);
     Route::resource('departments', DepartmentManagementController::class)->except(['show']);

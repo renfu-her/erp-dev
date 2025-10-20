@@ -8,6 +8,8 @@ use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
+use App\Support\InsuranceContributionSummary;
+use App\Support\InsuranceSchedule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,6 +17,13 @@ class FrontendUserSeeder extends Seeder
 {
     public function run(): void
     {
+        try {
+            $schedule = InsuranceSchedule::resolve();
+        } catch (\Throwable $e) {
+            $schedule = null;
+            $this->command?->warn('無法載入投保級距表，員工將缺少投保級距資訊。');
+        }
+
         $employeeRole = Role::where('slug', 'employee')->first();
         $managerRole = Role::where('slug', 'company-manager')->first();
 
@@ -38,6 +47,7 @@ class FrontendUserSeeder extends Seeder
                 'labor_grade' => 'Labor-1',
                 'is_indigenous' => false,
                 'is_disabled' => false,
+                'base_salary' => 36000,
             ],
             [
                 'email' => 'employee2@erp.local',
@@ -52,6 +62,7 @@ class FrontendUserSeeder extends Seeder
                 'labor_grade' => 'Labor-1',
                 'is_indigenous' => true,
                 'is_disabled' => false,
+                'base_salary' => 34500,
             ],
             [
                 'email' => 'manager@erp.local',
@@ -66,6 +77,7 @@ class FrontendUserSeeder extends Seeder
                 'labor_grade' => 'Labor-2',
                 'is_indigenous' => false,
                 'is_disabled' => true,
+                'base_salary' => 52000,
             ],
         ];
 
@@ -107,7 +119,11 @@ class FrontendUserSeeder extends Seeder
                 ],
             ]);
 
-            Employee::updateOrCreate(
+            $summary = ($schedule && isset($data['base_salary']))
+                ? InsuranceContributionSummary::make((float) $data['base_salary'], null, $schedule)
+                : null;
+
+            $employee = Employee::updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'company_id' => $company->id,
@@ -118,7 +134,7 @@ class FrontendUserSeeder extends Seeder
                     'last_name' => explode(' ', $data['name'])[1] ?? 'User',
                     'middle_name' => null,
                     'salary_grade' => $data['salary_grade'] ?? null,
-                    'labor_grade' => $data['labor_grade'] ?? null,
+                    'labor_grade' => $summary['grade_label'] ?? $data['labor_grade'] ?? null,
                     'is_indigenous' => $data['is_indigenous'] ?? false,
                     'is_disabled' => $data['is_disabled'] ?? false,
                     'status' => 'active',
@@ -126,6 +142,21 @@ class FrontendUserSeeder extends Seeder
                     'personal_data' => null,
                 ]
             );
+
+            if ($employee) {
+                $employee->contracts()
+                    ->updateOrCreate(
+                        ['employee_id' => $employee->id, 'is_active' => true],
+                        [
+                            'contract_type' => 'full_time',
+                            'starts_on' => now()->subMonths(6)->startOfMonth(),
+                            'base_salary' => $data['base_salary'] ?? 36000,
+                            'currency' => 'TWD',
+                            'terms' => null,
+                            'is_active' => true,
+                        ]
+                    );
+            }
         }
     }
 }

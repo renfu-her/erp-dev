@@ -10,6 +10,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             AccessControlSeeder::class,
+            InsuranceBracketSeeder::class,
             PositionLevelSeeder::class,
             LeaveTypeSeeder::class,
             CompanyDataSeeder::class,

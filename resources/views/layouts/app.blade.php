@@ -102,7 +102,7 @@
                                 'label' => '勞健保級距',
                                 'route' => 'backend.insurance-brackets.index',
                                 'active' => ['backend.insurance-brackets.*'],
-                                'permissions' => ['backend.access', 'payroll.manage'],
+                                'permissions' => ['backend.access', 'payroll.view'],
                             ],
                         ];
 

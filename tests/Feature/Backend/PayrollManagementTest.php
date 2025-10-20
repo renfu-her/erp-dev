@@ -5,13 +5,12 @@ namespace Tests\Feature\Backend;
 use App\Models\Company;
 use App\Models\Employee;
 use App\Models\EmploymentContract;
-use App\Models\InsuranceBracket;
 use App\Models\PayrollPeriod;
 use App\Models\Role;
 use App\Models\User;
 use App\Support\InsuranceContributionSummary;
-use App\Support\InsuranceSchedule;
 use Database\Seeders\AccessControlSeeder;
+use Database\Seeders\InsuranceBracketSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,16 +20,9 @@ class PayrollManagementTest extends TestCase
 
     public function test_index_displays_employee_salary_and_insurance_breakdown(): void
     {
-        $this->seed(AccessControlSeeder::class);
-
-        InsuranceBracket::factory()->create([
-            'label' => '投保薪資 42,000 元',
-            'grade' => 42000,
-            'labor_employee_local' => 600,
-            'labor_employer_local' => 900,
-            'health_employee' => 750,
-            'health_employer' => 1050,
-            'pension_employer' => 2520,
+        $this->seed([
+            AccessControlSeeder::class,
+            InsuranceBracketSeeder::class,
         ]);
 
         /** @var User $user */
@@ -73,7 +65,10 @@ class PayrollManagementTest extends TestCase
 
     public function test_user_can_create_payroll_period(): void
     {
-        $this->seed(AccessControlSeeder::class);
+        $this->seed([
+            AccessControlSeeder::class,
+            InsuranceBracketSeeder::class,
+        ]);
 
         /** @var User $user */
         $user = User::factory()->create();
@@ -102,7 +97,10 @@ class PayrollManagementTest extends TestCase
 
     public function test_user_can_create_payroll_run_for_company(): void
     {
-        $this->seed(AccessControlSeeder::class);
+        $this->seed([
+            AccessControlSeeder::class,
+            InsuranceBracketSeeder::class,
+        ]);
 
         /** @var User $user */
         $user = User::factory()->create();

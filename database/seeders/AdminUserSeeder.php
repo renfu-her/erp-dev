@@ -8,6 +8,8 @@ use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
+use App\Support\InsuranceContributionSummary;
+use App\Support\InsuranceSchedule;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -15,6 +17,13 @@ class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
+        try {
+            $schedule = InsuranceSchedule::resolve();
+        } catch (\Throwable $e) {
+            $schedule = null;
+            $this->command?->warn('無法載入投保級距表，系統管理者缺少投保資訊。');
+        }
+
         $role = Role::where('slug', 'system-owner')->first();
 
         if (! $role) {
@@ -43,8 +52,12 @@ class AdminUserSeeder extends Seeder
             ? Position::where('department_id', $department->id)->where('title', 'HR Manager')->first()
             : null;
 
+        $summary = ($schedule)
+            ? InsuranceContributionSummary::make(68000.0, null, $schedule)
+            : null;
+
         if ($company) {
-            Employee::updateOrCreate(
+            $employee = Employee::updateOrCreate(
                 ['user_id' => $admin->id],
                 [
                     'company_id' => $company->id,
@@ -54,7 +67,7 @@ class AdminUserSeeder extends Seeder
                     'first_name' => 'System',
                     'last_name' => 'Owner',
                     'salary_grade' => 'L1',
-                    'labor_grade' => 'A',
+                    'labor_grade' => $summary['grade_label'] ?? 'A',
                     'is_indigenous' => false,
                     'is_disabled' => false,
                     'middle_name' => null,
@@ -63,6 +76,20 @@ class AdminUserSeeder extends Seeder
                     'personal_data' => null,
                 ]
             );
+
+            if ($employee) {
+                $employee->contracts()->updateOrCreate(
+                    ['employee_id' => $employee->id, 'is_active' => true],
+                    [
+                        'contract_type' => 'full_time',
+                        'starts_on' => now()->subYears(3)->startOfYear(),
+                        'base_salary' => 68000,
+                        'currency' => 'TWD',
+                        'terms' => null,
+                        'is_active' => true,
+                    ]
+                );
+            }
         }
     }
 }

@@ -147,9 +147,9 @@
                                         <th scope="col">職位</th>
                                         <th scope="col" class="text-end">契約薪資</th>
                                         <th scope="col" class="text-end">投保級距</th>
-                                        <th scope="col" class="text-end">勞保保費</th>
-                                        <th scope="col" class="text-end">健保保費</th>
-                                        <th scope="col" class="text-end">勞退提繳（6%）</th>
+                                        <th scope="col" class="text-end">勞保（員工）</th>
+                                        <th scope="col" class="text-end">健保（員工）</th>
+                                        <th scope="col" class="text-end">勞退提繳 6%</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -163,8 +163,8 @@
                                             $baseSalaryValue = is_null($item['base_salary']) ? null : (float) $item['base_salary'];
                                             $gradeLabel = $item['grade_label'];
                                             $gradeValue = $item['grade_value'];
-                                            $laborTotal = data_get($summary, 'labor_local.total');
-                                            $healthTotal = data_get($summary, 'health.total');
+                                            $laborEmployee = data_get($summary, 'labor_local.employee');
+                                            $healthEmployee = data_get($summary, 'health.employee');
                                             $pensionEmployer = data_get($summary, 'pension.employer');
                                         @endphp
                                         <tr>
@@ -195,14 +195,14 @@
                                             </td>
                                             <td class="text-end">
                                                 @if (! is_null($baseSalaryValue) && $summary)
-                                                    {{ $formatInteger($laborTotal) }} 元
+                                                    {{ $formatInteger($laborEmployee) }} 元
                                                 @else
                                                     —
                                                 @endif
                                             </td>
                                             <td class="text-end">
                                                 @if (! is_null($baseSalaryValue) && $summary)
-                                                    {{ $formatInteger($healthTotal) }} 元
+                                                    {{ $formatInteger($healthEmployee) }} 元
                                                 @else
                                                     —
                                                 @endif

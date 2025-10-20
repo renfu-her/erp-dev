@@ -8,6 +8,7 @@ use App\Models\Position;
 use App\Models\Role;
 use App\Models\User;
 use Database\Seeders\AccessControlSeeder;
+use Database\Seeders\InsuranceBracketSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -17,24 +18,17 @@ class PositionManagementTest extends TestCase
 
     public function test_store_persists_reference_salary_and_insurance_snapshot(): void
     {
-        $this->seed(AccessControlSeeder::class);
-
-        InsuranceBracket::factory()->create([
-            'label' => '投保薪資 36,000 元',
-            'grade' => 36000,
-            'labor_employee_local' => 500,
-            'labor_employer_local' => 700,
-            'labor_employee_foreign' => 500,
-            'labor_employer_foreign' => 700,
-            'health_employee' => 650,
-            'health_employer' => 950,
-            'pension_employer' => 2160,
+        $this->seed([
+            AccessControlSeeder::class,
+            InsuranceBracketSeeder::class,
         ]);
 
         /** @var User $user */
         $user = User::factory()->create();
         $role = Role::where('slug', 'hr-admin')->firstOrFail();
         $user->roles()->attach($role->id);
+
+        $bracket = InsuranceBracket::where('grade', '>=', 36000)->orderBy('grade')->firstOrFail();
 
         $department = Department::factory()->create();
 
@@ -43,7 +37,7 @@ class PositionManagementTest extends TestCase
                 'department_id' => $department->id,
                 'title' => '生產線班長',
                 'grade' => 'M1',
-                'reference_salary' => 36000,
+                'reference_salary' => $bracket->grade,
                 'insurance_grade' => '',
                 'is_managerial' => true,
             ]);
@@ -67,27 +61,14 @@ class PositionManagementTest extends TestCase
 
     public function test_update_allows_manual_insurance_grade_override(): void
     {
-        $this->seed(AccessControlSeeder::class);
-
-        InsuranceBracket::factory()->create([
-            'label' => '投保薪資 32,000 元',
-            'grade' => 32000,
-            'labor_employee_local' => 450,
-            'labor_employer_local' => 600,
-            'health_employee' => 600,
-            'health_employer' => 800,
-            'pension_employer' => 1920,
+        $this->seed([
+            AccessControlSeeder::class,
+            InsuranceBracketSeeder::class,
         ]);
 
-        $manualBracket = InsuranceBracket::factory()->create([
-            'label' => '投保薪資 45,000 元',
-            'grade' => 45000,
-            'labor_employee_local' => 580,
-            'labor_employer_local' => 820,
-            'health_employee' => 780,
-            'health_employer' => 1020,
-            'pension_employer' => 2700,
-        ]);
+        $baseBracket = InsuranceBracket::where('grade', '>=', 32000)->orderBy('grade')->firstOrFail();
+
+        $manualBracket = InsuranceBracket::where('grade', '>=', 45000)->orderBy('grade')->firstOrFail();
 
         /** @var User $user */
         $user = User::factory()->create();
@@ -95,7 +76,7 @@ class PositionManagementTest extends TestCase
         $user->roles()->attach($role->id);
 
         $position = Position::factory()->create([
-            'reference_salary' => 32000,
+            'reference_salary' => $baseBracket->grade,
         ]);
 
         $response = $this->actingAs($user)
