@@ -1,0 +1,63 @@
+body {
+    background-color: #f5f6f8;
+}
+
+.app-shell {
+    min-height: 100vh;
+}
+
+.app-sidebar {
+    width: 260px;
+}
+
+.app-sidebar-nav .nav-link {
+    color: #495057;
+    font-weight: 500;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-sidebar-nav .nav-link:hover {
+    background-color: rgba(13, 110, 253, 0.08);
+    color: #0d6efd;
+}
+
+.app-sidebar-nav .nav-link.active {
+    background-color: #0d6efd;
+    color: #fff;
+}
+
+.app-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030;
+}
+
+.app-content {
+    background-color: #f5f6f8;
+}
+
+.app-footer {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+@media (min-width: 992px) {
+    .app-layout {
+        display: flex;
+    }
+
+    .app-sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+    }
+}
+
+.page-title {
+    font-size: 1.75rem;
+}
+
+.table-nowrap td,
+.table-nowrap th {
+    white-space: nowrap;
+}
