@@ -118,13 +118,13 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('backend.positions.edit', $position) }}" class="btn btn-outline-primary">編輯</a>
+                                <div class="btn-group-separated">
+                                    <a href="{{ route('backend.positions.edit', $position) }}" class="btn btn-outline-primary btn-sm">編輯</a>
                                     <form action="{{ route('backend.positions.destroy', $position) }}" method="POST"
-                                        onsubmit="return confirm('確定要刪除職位 {{ $position->title }} 嗎？');">
+                                        onsubmit="return confirm('確定要刪除職位 {{ $position->title }} 嗎？');" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger">刪除</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">刪除</button>
                                     </form>
                                 </div>
                             </td>

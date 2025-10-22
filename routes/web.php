@@ -7,6 +7,7 @@ use App\Http\Controllers\Backend\CompanyManagementController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\DepartmentManagementController;
 use App\Http\Controllers\Backend\EmployeeManagementController;
+use App\Http\Controllers\Backend\HolidayManagementController;
 use App\Http\Controllers\Backend\InsuranceBracketController;
 use App\Http\Controllers\Backend\HumanResourceController as BackendHumanResourceController;
 use App\Http\Controllers\Backend\LeaveRequestManagementController;
@@ -59,6 +60,10 @@ Route::prefix('backend')->name('backend.')->middleware(['auth', 'permission:back
         ->name('insurance-brackets.index');
 
     Route::resource('companies', CompanyManagementController::class)->except(['show']);
+    Route::get('companies/{company}/schedule', [CompanyManagementController::class, 'editSchedule'])->name('companies.schedule.edit');
+    Route::post('companies/{company}/schedule', [CompanyManagementController::class, 'storeSchedule'])->name('companies.schedule.store');
+    Route::put('companies/{company}/schedule/{workSchedule}', [CompanyManagementController::class, 'updateSchedule'])->name('companies.schedule.update');
+    Route::resource('holidays', HolidayManagementController::class)->except(['show']);
     Route::resource('departments', DepartmentManagementController::class)->except(['show']);
     Route::resource('positions', PositionManagementController::class)->except(['show']);
     Route::resource('employees', EmployeeManagementController::class)->except(['show']);

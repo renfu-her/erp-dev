@@ -8,7 +8,10 @@
             <h2 class="page-title fw-bold mb-1">公司管理</h2>
             <p class="text-muted small mb-0">新增並維護 ERP 內的公司資料，後續部門與員工皆依附於公司。</p>
         </div>
-        <a href="{{ route('backend.companies.create') }}" class="btn btn-primary">建立公司</a>
+        <div class="d-flex gap-2">
+            <a href="{{ route('backend.holidays.index', ['year' => date('Y')]) }}" class="btn btn-outline-info">國定假日管理</a>
+            <a href="{{ route('backend.companies.create') }}" class="btn btn-primary">建立公司</a>
+        </div>
     </div>
 
     <div class="card shadow-sm">
@@ -39,12 +42,12 @@
                                     </span>
                                 </td>
                                 <td class="text-end">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <a href="{{ route('backend.companies.edit', $company) }}" class="btn btn-outline-primary">編輯</a>
-                                        <form action="{{ route('backend.companies.destroy', $company) }}" method="POST" onsubmit="return confirm('確認刪除此公司？此動作無法復原。')">
+                                    <div class="btn-group-separated">
+                                        <a href="{{ route('backend.companies.edit', $company) }}" class="btn btn-outline-primary btn-sm">編輯</a>
+                                        <form action="{{ route('backend.companies.destroy', $company) }}" method="POST" onsubmit="return confirm('確認刪除此公司？此動作無法復原。')" class="d-inline">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-outline-danger">刪除</button>
+                                            <button type="submit" class="btn btn-outline-danger btn-sm">刪除</button>
                                         </form>
                                     </div>
                                 </td>

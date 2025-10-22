@@ -32,4 +32,14 @@ class Company extends Model
     {
         return $this->hasMany(Employee::class);
     }
+
+    public function workSchedules(): HasMany
+    {
+        return $this->hasMany(CompanyWorkSchedule::class);
+    }
+
+    public function currentWorkSchedule()
+    {
+        return $this->workSchedules()->active()->first();
+    }
 }

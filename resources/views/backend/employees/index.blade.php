@@ -100,20 +100,20 @@
                                 @endif
                             </td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('backend.employees.edit', $employee) }}" class="btn btn-outline-primary">編輯</a>
-                                    <form action="{{ route('backend.employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('確認刪除員工 {{ $employee->employee_no }} ？');">
+                                <div class="btn-group-separated">
+                                    <a href="{{ route('backend.employees.edit', $employee) }}" class="btn btn-outline-primary btn-sm">編輯</a>
+                                    <form action="{{ route('backend.employees.destroy', $employee) }}" method="POST" onsubmit="return confirm('確認刪除員工 {{ $employee->employee_no }} ？');" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger">刪除</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">刪除</button>
                                     </form>
                                     @if ($employee->status === 'blocked')
-                                        <form action="{{ route('backend.employees.unblock', $employee) }}" method="POST">
+                                        <form action="{{ route('backend.employees.unblock', $employee) }}" method="POST" class="d-inline">
                                             @csrf
-                                            <button type="submit" class="btn btn-outline-success">解除阻擋</button>
+                                            <button type="submit" class="btn btn-outline-success btn-sm">解除阻擋</button>
                                         </form>
                                     @else
-                                        <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#blockModal" data-employee-id="{{ $employee->id }}" data-employee-code="{{ $employee->employee_no }}">
+                                        <button type="button" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#blockModal" data-employee-id="{{ $employee->id }}" data-employee-code="{{ $employee->employee_no }}">
                                             阻擋
                                         </button>
                                     @endif

@@ -54,6 +54,51 @@
                     </form>
                 </div>
             </div>
+
+            <!-- Work Schedule Section -->
+            <div class="card shadow-sm mt-4">
+                <div class="card-header">
+                    <h3 class="card-title h4 mb-0">工作時間設定</h3>
+                </div>
+                <div class="card-body">
+                    @if($company->currentWorkSchedule())
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <strong>目前工作時間：</strong>
+                                {{ $company->currentWorkSchedule()->work_start_time->format('H:i') }} - 
+                                {{ $company->currentWorkSchedule()->work_end_time->format('H:i') }}
+                            </div>
+                            <div class="col-md-6">
+                                <strong>休息時間：</strong>
+                                {{ $company->currentWorkSchedule()->lunch_start_time->format('H:i') }} - 
+                                {{ $company->currentWorkSchedule()->lunch_end_time->format('H:i') }}
+                            </div>
+                            <div class="col-12 mt-2">
+                                <strong>總工作時數：</strong>
+                                <span class="badge bg-primary">{{ $company->currentWorkSchedule()->working_hours }} 小時</span>
+                            </div>
+                            <div class="col-12 mt-2">
+                                <strong>有效期間：</strong>
+                                {{ $company->currentWorkSchedule()->effective_from->format('Y-m-d') }} 至 
+                                {{ $company->currentWorkSchedule()->effective_until->format('Y-m-d') }}
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('backend.companies.schedule.edit', $company) }}" class="btn btn-outline-primary">編輯工作時間</a>
+                            <a href="{{ route('backend.holidays.index', ['year' => date('Y')]) }}" class="btn btn-outline-info">國定假日管理</a>
+                        </div>
+                    @else
+                        <div class="alert alert-info">
+                            <h5 class="alert-heading">尚未設定工作時間</h5>
+                            <p class="mb-0">請為此公司設定工作時間，包括上班時間、下班時間和休息時間。</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('backend.companies.schedule.edit', $company) }}" class="btn btn-primary">設定工作時間</a>
+                            <a href="{{ route('backend.holidays.index', ['year' => date('Y')]) }}" class="btn btn-outline-info">國定假日管理</a>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
 @endsection

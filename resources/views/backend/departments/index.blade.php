@@ -31,12 +31,12 @@
                             <td class="text-muted small">{{ $department->parent?->name ?? '—' }}</td>
                             <td class="text-muted small">{{ $department->lead?->last_name }}{{ $department->lead?->first_name ?? '—' }}</td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('backend.departments.edit', $department) }}" class="btn btn-outline-primary">編輯</a>
-                                    <form action="{{ route('backend.departments.destroy', $department) }}" method="POST" onsubmit="return confirm('確認刪除部門 {{ $department->name }}？');">
+                                <div class="btn-group-separated">
+                                    <a href="{{ route('backend.departments.edit', $department) }}" class="btn btn-outline-primary btn-sm">編輯</a>
+                                    <form action="{{ route('backend.departments.destroy', $department) }}" method="POST" onsubmit="return confirm('確認刪除部門 {{ $department->name }}？');" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger">刪除</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">刪除</button>
                                     </form>
                                 </div>
                             </td>
