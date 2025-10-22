@@ -1,135 +1,135 @@
-# ERP 開發專案 - 完整文件
+# ERP Development Project - Complete Documentation
 
-## 目錄
-1. [專案概述](#專案概述)
-2. [技術棧](#技術棧)
-3. [專案結構](#專案結構)
-4. [核心模組](#核心模組)
-5. [數據庫架構](#數據庫架構)
-6. [權限與角色系統](#權限與角色系統)
-7. [路由設計](#路由設計)
-8. [前端架構](#前端架構)
-9. [開發環境設置](#開發環境設置)
-10. [測試帳號](#測試帳號)
-11. [開發規範](#開發規範)
-12. [API 文件](#api-文件)
-13. [部署指南](#部署指南)
-14. [後續開發計劃](#後續開發計劃)
-
----
-
-## 專案概述
-
-這是一個基於 Laravel 12 開發的企業資源規劃（ERP）系統，主要聚焦於人力資源管理功能。系統採用現代化的 Web 應用架構，提供後台管理介面和員工自助服務入口。
-
-### 主要功能模組
-- **公司組織管理**：公司、部門、職位、員工資料維護
-- **出勤管理**：打卡記錄、出勤統計、補登管理
-- **請假管理**：假別設定、請假申請、審核流程
-- **薪資管理**：薪資期間、薪資計算、保險級距
-- **權限控制**：角色權限、公司範圍權限、操作審計
-
-### 系統特色
-- ✅ 前後台分離設計
-- ✅ 完整的權限控制系統
-- ✅ 多公司/多部門支援
-- ✅ 響應式 Bootstrap 5 介面
-- ✅ RESTful API 架構
-- ✅ 完整的測試覆蓋
+## Table of Contents
+1. [Project Overview](#project-overview)
+2. [Technology Stack](#technology-stack)
+3. [Project Structure](#project-structure)
+4. [Core Modules](#core-modules)
+5. [Database Architecture](#database-architecture)
+6. [Permission & Role System](#permission--role-system)
+7. [Routing Design](#routing-design)
+8. [Frontend Architecture](#frontend-architecture)
+9. [Development Environment Setup](#development-environment-setup)
+10. [Test Accounts](#test-accounts)
+11. [Development Guidelines](#development-guidelines)
+12. [API Documentation](#api-documentation)
+13. [Deployment Guide](#deployment-guide)
+14. [Future Development Roadmap](#future-development-roadmap)
 
 ---
 
-## 技術棧
+## Project Overview
 
-### 後端技術
-- **框架**: Laravel 12.x (PHP 8.2+)
-- **資料庫**: SQLite (開發環境) / MySQL (生產環境)
-- **認證**: Laravel Session Authentication
+This is an Enterprise Resource Planning (ERP) system developed with Laravel 12, primarily focused on Human Resources Management functionality. The system adopts a modern web application architecture, providing both backend management interface and employee self-service portal.
+
+### Main Functional Modules
+- **Company Organization Management**: Companies, departments, positions, employee data maintenance
+- **Attendance Management**: Clock in/out records, attendance statistics, manual entry management
+- **Leave Management**: Leave type settings, leave applications, approval workflow
+- **Payroll Management**: Payroll periods, payroll calculation, insurance brackets
+- **Access Control**: Role-based permissions, company-scoped access, activity audit logs
+
+### System Features
+- ✅ Separate frontend and backend design
+- ✅ Complete permission control system
+- ✅ Multi-company/multi-department support
+- ✅ Responsive Bootstrap 5 interface
+- ✅ RESTful API architecture
+- ✅ Comprehensive test coverage
+
+---
+
+## Technology Stack
+
+### Backend Technologies
+- **Framework**: Laravel 12.x (PHP 8.2+)
+- **Database**: SQLite (development) / MySQL (production)
+- **Authentication**: Laravel Session Authentication
 - **API**: Laravel Sanctum (Token Authentication)
-- **測試**: PHPUnit 11.x
+- **Testing**: PHPUnit 11.x
 
-### 前端技術
-- **UI 框架**: Bootstrap 5.3.x (CDN)
+### Frontend Technologies
+- **UI Framework**: Bootstrap 5.3.x (CDN)
 - **JavaScript**: jQuery 3.7.x (CDN)
-- **樣式**: 自訂 CSS (`public/css/app.css`)
-- **模板引擎**: Blade Templates
-- **圖示**: Bootstrap Icons
+- **Styling**: Custom CSS (`public/css/app.css`)
+- **Template Engine**: Blade Templates
+- **Icons**: Bootstrap Icons
 
-### 開發工具
-- **程式碼風格**: Laravel Pint (PSR-12)
-- **依賴管理**: Composer
-- **版本控制**: Git
-- **除錯工具**: Laravel Telescope (可選)
+### Development Tools
+- **Code Style**: Laravel Pint (PSR-12)
+- **Dependency Management**: Composer
+- **Version Control**: Git
+- **Debugging**: Laravel Telescope (optional)
 
 ---
 
-## 專案結構
+## Project Structure
 
 ```
 erp-dev/
 ├── app/
 │   ├── Console/
-│   │   └── Commands/          # Artisan 命令
+│   │   └── Commands/          # Artisan commands
 │   ├── Http/
 │   │   ├── Controllers/
-│   │   │   ├── Auth/          # 認證控制器
-│   │   │   ├── Backend/       # 後台控制器
-│   │   │   └── Frontend/      # 前台控制器
-│   │   ├── Middleware/        # 自訂中介層
-│   │   ├── Requests/          # 表單驗證請求
-│   │   └── Resources/         # API 資源
-│   ├── Models/                # Eloquent 模型
-│   ├── Observers/             # 模型觀察者
-│   ├── Providers/             # 服務提供者
-│   ├── Support/               # 支援類別
+│   │   │   ├── Auth/          # Authentication controllers
+│   │   │   ├── Backend/       # Backend controllers
+│   │   │   └── Frontend/      # Frontend controllers
+│   │   ├── Middleware/        # Custom middleware
+│   │   ├── Requests/          # Form request validation
+│   │   └── Resources/         # API resources
+│   ├── Models/                # Eloquent models
+│   ├── Observers/             # Model observers
+│   ├── Providers/             # Service providers
+│   ├── Support/               # Support classes
 │   └── View/
-│       ├── Components/        # Blade 元件
-│       └── Composers/         # 視圖組合器
-├── bootstrap/                 # 框架啟動檔案
-├── config/                    # 設定檔案
+│       ├── Components/        # Blade components
+│       └── Composers/         # View composers
+├── bootstrap/                 # Framework bootstrap files
+├── config/                    # Configuration files
 ├── database/
-│   ├── factories/             # 模型工廠
-│   ├── migrations/            # 資料庫遷移
-│   └── seeders/               # 資料填充
-├── docs/                      # 文件目錄
-├── public/                    # 公開資源
+│   ├── factories/             # Model factories
+│   ├── migrations/            # Database migrations
+│   └── seeders/               # Data seeders
+├── docs/                      # Documentation directory
+├── public/                    # Public assets
 │   └── css/
-│       └── app.css            # 自訂樣式
+│       └── app.css            # Custom styles
 ├── resources/
 │   └── views/
-│       ├── auth/              # 認證頁面
-│       ├── backend/           # 後台視圖
-│       ├── frontend/          # 前台視圖
-│       ├── components/        # Blade 元件
-│       └── layouts/           # 版面配置
+│       ├── auth/              # Authentication pages
+│       ├── backend/           # Backend views
+│       ├── frontend/          # Frontend views
+│       ├── components/        # Blade components
+│       └── layouts/           # Layout templates
 ├── routes/
-│   ├── api.php                # API 路由
-│   ├── console.php            # 命令列路由
-│   └── web.php                # Web 路由
-├── storage/                   # 儲存目錄
+│   ├── api.php                # API routes
+│   ├── console.php            # Console routes
+│   └── web.php                # Web routes
+├── storage/                   # Storage directory
 ├── tests/
-│   ├── Feature/               # 功能測試
-│   └── Unit/                  # 單元測試
-├── vendor/                    # Composer 依賴
-├── .env.example               # 環境變數範例
-├── composer.json              # PHP 依賴定義
-├── phpunit.xml                # PHPUnit 設定
-└── README.md                  # 專案說明
+│   ├── Feature/               # Feature tests
+│   └── Unit/                  # Unit tests
+├── vendor/                    # Composer dependencies
+├── .env.example               # Environment variables example
+├── composer.json              # PHP dependencies definition
+├── phpunit.xml                # PHPUnit configuration
+└── README.md                  # Project readme
 ```
 
 ---
 
-## 核心模組
+## Core Modules
 
-### 1. 公司組織管理模組
+### 1. Company Organization Management Module
 
-#### 功能說明
-- 多公司管理（Companies）
-- 部門層級管理（Departments）
-- 職位定義（Positions）
-- 員工資料管理（Employees）
+#### Features
+- Multi-company management (Companies)
+- Department hierarchy management (Departments)
+- Position definitions (Positions)
+- Employee data management (Employees)
 
-#### 主要檔案
+#### Main Files
 - **Models**: `Company.php`, `Department.php`, `Position.php`, `Employee.php`
 - **Controllers**: 
   - `CompanyManagementController.php`
@@ -142,218 +142,218 @@ erp-dev/
   - `2024_01_01_100150_create_positions_table.php`
   - `2024_01_01_100200_create_employees_table.php`
 
-#### 資料表結構
+#### Table Structures
 
-**companies 表**
-- `id`: 主鍵
-- `name`: 公司名稱
-- `code`: 公司代碼
-- `tax_id`: 統一編號
-- `address`: 地址
-- `phone`: 電話
-- `is_active`: 啟用狀態
+**companies table**
+- `id`: Primary key
+- `name`: Company name
+- `code`: Company code
+- `tax_id`: Tax identification number
+- `address`: Address
+- `phone`: Phone number
+- `is_active`: Active status
 - `timestamps`
 
-**departments 表**
-- `id`: 主鍵
-- `company_id`: 所屬公司
-- `parent_id`: 父部門（支援層級）
-- `name`: 部門名稱
-- `code`: 部門代碼
-- `lead_employee_id`: 部門主管
-- `is_active`: 啟用狀態
+**departments table**
+- `id`: Primary key
+- `company_id`: Parent company
+- `parent_id`: Parent department (supports hierarchy)
+- `name`: Department name
+- `code`: Department code
+- `lead_employee_id`: Department head
+- `is_active`: Active status
 - `timestamps`
 
-**positions 表**
-- `id`: 主鍵
-- `company_id`: 所屬公司
-- `department_id`: 所屬部門
-- `name`: 職位名稱
-- `code`: 職位代碼
-- `level_id`: 職級
-- `reference_salary`: 參考薪資
-- `insurance_grade`: 保險級距
-- `is_active`: 啟用狀態
+**positions table**
+- `id`: Primary key
+- `company_id`: Parent company
+- `department_id`: Parent department
+- `name`: Position name
+- `code`: Position code
+- `level_id`: Position level
+- `reference_salary`: Reference salary
+- `insurance_grade`: Insurance grade
+- `is_active`: Active status
 - `timestamps`
 
-**employees 表**
-- `id`: 主鍵
-- `user_id`: 關聯使用者帳號
-- `company_id`: 所屬公司
-- `department_id`: 所屬部門
-- `position_id`: 職位
-- `employee_number`: 員工編號
-- `full_name`: 全名
-- `id_number`: 身分證字號
-- `birth_date`: 出生日期
-- `hire_date`: 到職日期
-- `salary_grade`: 薪資等級
-- `labor_grade`: 勞工等級
-- `is_indigenous`: 原住民身分
-- `is_disabled`: 身心障礙身分
-- `is_blocked`: 封鎖狀態
-- `blocked_at`: 封鎖時間
-- `blocked_reason`: 封鎖原因
+**employees table**
+- `id`: Primary key
+- `user_id`: Linked user account
+- `company_id`: Parent company
+- `department_id`: Parent department
+- `position_id`: Position
+- `employee_number`: Employee number
+- `full_name`: Full name
+- `id_number`: National ID number
+- `birth_date`: Birth date
+- `hire_date`: Hire date
+- `salary_grade`: Salary grade
+- `labor_grade`: Labor grade
+- `is_indigenous`: Indigenous status
+- `is_disabled`: Disability status
+- `is_blocked`: Blocked status
+- `blocked_at`: Blocked timestamp
+- `blocked_reason`: Block reason
 - `timestamps`
 - `softDeletes`
 
-### 2. 出勤管理模組
+### 2. Attendance Management Module
 
-#### 功能說明
-- 員工打卡（上班/下班）
-- 出勤記錄查詢
-- 補登出勤記錄
-- 出勤統計摘要
+#### Features
+- Employee clock in/out (check-in/check-out)
+- Attendance record queries
+- Manual attendance entry
+- Attendance summary statistics
 
-#### 主要檔案
+#### Main Files
 - **Models**: 
   - `AttendanceLog.php`
   - `AttendanceSummary.php`
   - `AttendanceDevice.php`
 - **Controllers**:
-  - `Frontend/AttendanceController.php` (員工打卡)
-  - `Backend/AttendanceManagementController.php` (後台管理)
+  - `Frontend/AttendanceController.php` (Employee clock in/out)
+  - `Backend/AttendanceManagementController.php` (Backend management)
 - **Migration**: `2025_10_18_151134_create_attendance_tables.php`
 
-#### 資料表結構
+#### Table Structures
 
-**attendance_logs 表**
-- `id`: 主鍵
-- `employee_id`: 員工 ID
-- `recorded_at`: 打卡時間
-- `type`: 打卡類型 (check-in/check-out)
-- `device_id`: 打卡設備
-- `ip_address`: IP 位址
-- `remarks`: 備註
-- `created_by`: 建立者
+**attendance_logs table**
+- `id`: Primary key
+- `employee_id`: Employee ID
+- `recorded_at`: Clock time
+- `type`: Clock type (check-in/check-out)
+- `device_id`: Device ID
+- `ip_address`: IP address
+- `remarks`: Remarks
+- `created_by`: Creator
 - `timestamps`
 
-**attendance_summaries 表**
-- `id`: 主鍵
-- `employee_id`: 員工 ID
-- `date`: 日期
-- `first_check_in`: 首次打卡
-- `last_check_out`: 最後打卡
-- `total_hours`: 總工時
-- `late_minutes`: 遲到分鐘數
-- `early_leave_minutes`: 早退分鐘數
+**attendance_summaries table**
+- `id`: Primary key
+- `employee_id`: Employee ID
+- `date`: Date
+- `first_check_in`: First check-in time
+- `last_check_out`: Last check-out time
+- `total_hours`: Total work hours
+- `late_minutes`: Late minutes
+- `early_leave_minutes`: Early leave minutes
 - `timestamps`
 
-**attendance_devices 表**
-- `id`: 主鍵
-- `name`: 設備名稱
-- `code`: 設備代碼
-- `location`: 設備位置
-- `is_active`: 啟用狀態
+**attendance_devices table**
+- `id`: Primary key
+- `name`: Device name
+- `code`: Device code
+- `location`: Device location
+- `is_active`: Active status
 - `timestamps`
 
-#### 路由
+#### Routes
 ```php
-// 前台打卡
-POST /frontend/attendance/check-in    // 上班打卡
-POST /frontend/attendance/check-out   // 下班打卡
+// Frontend clock in/out
+POST /frontend/attendance/check-in    // Check in
+POST /frontend/attendance/check-out   // Check out
 
-// 後台管理
-GET  /backend/attendance              // 出勤記錄列表
-POST /backend/attendance              // 補登出勤記錄
+// Backend management
+GET  /backend/attendance              // Attendance records list
+POST /backend/attendance              // Manual attendance entry
 ```
 
-### 3. 請假管理模組
+### 3. Leave Management Module
 
-#### 功能說明
-- 假別設定與管理
-- 員工請假申請
-- 請假審核流程
-- 假勤餘額管理
+#### Features
+- Leave type settings and management
+- Employee leave applications
+- Leave approval workflow
+- Leave balance management
 
-#### 主要檔案
+#### Main Files
 - **Models**:
   - `LeaveType.php`
   - `LeaveRequest.php`
   - `LeaveBalance.php`
 - **Controllers**:
-  - `Frontend/EmployeeLeaveController.php` (員工申請)
-  - `Backend/LeaveTypeManagementController.php` (假別管理)
-  - `Backend/LeaveRequestManagementController.php` (審核管理)
+  - `Frontend/EmployeeLeaveController.php` (Employee applications)
+  - `Backend/LeaveTypeManagementController.php` (Leave type management)
+  - `Backend/LeaveRequestManagementController.php` (Approval management)
 - **Requests**:
   - `StoreLeaveTypeRequest.php`
   - `UpdateLeaveTypeRequest.php`
   - `SubmitLeaveRequest.php`
 
-#### 資料表結構
+#### Table Structures
 
-**leave_types 表**
-- `id`: 主鍵
-- `company_id`: 所屬公司
-- `code`: 假別代碼
-- `name`: 假別名稱
-- `default_days`: 預設天數
-- `requires_approval`: 是否需審核
-- `is_paid`: 是否支薪
-- `is_active`: 啟用狀態
+**leave_types table**
+- `id`: Primary key
+- `company_id`: Parent company
+- `code`: Leave type code
+- `name`: Leave type name
+- `default_days`: Default days
+- `requires_approval`: Requires approval
+- `is_paid`: Is paid leave
+- `is_active`: Active status
 - `timestamps`
 
-**leave_requests 表**
-- `id`: 主鍵
-- `employee_id`: 申請員工
-- `leave_type_id`: 假別
-- `start_date`: 開始日期
-- `end_date`: 結束日期
-- `start_time`: 開始時間
-- `end_time`: 結束時間
-- `total_days`: 總天數
-- `reason`: 請假事由
-- `status`: 狀態 (pending/approved/rejected/cancelled)
-- `approved_by`: 審核者
-- `approved_at`: 審核時間
-- `remarks`: 審核備註
+**leave_requests table**
+- `id`: Primary key
+- `employee_id`: Applicant employee
+- `leave_type_id`: Leave type
+- `start_date`: Start date
+- `end_date`: End date
+- `start_time`: Start time
+- `end_time`: End time
+- `total_days`: Total days
+- `reason`: Leave reason
+- `status`: Status (pending/approved/rejected/cancelled)
+- `approved_by`: Approver
+- `approved_at`: Approval timestamp
+- `remarks`: Approval remarks
 - `timestamps`
 
-**leave_balances 表**
-- `id`: 主鍵
-- `employee_id`: 員工 ID
-- `leave_type_id`: 假別
-- `year`: 年度
-- `total_days`: 總額度
-- `used_days`: 已使用
-- `remaining_days`: 剩餘額度
+**leave_balances table**
+- `id`: Primary key
+- `employee_id`: Employee ID
+- `leave_type_id`: Leave type
+- `year`: Year
+- `total_days`: Total allowance
+- `used_days`: Used days
+- `remaining_days`: Remaining balance
 - `timestamps`
 
-#### 請假狀態流程
+#### Leave Status Flow
 ```
-pending (待審核)
-  ├─> approved (已核准)
-  ├─> rejected (已拒絕)
-  └─> cancelled (已取消)
+pending (Pending approval)
+  ├─> approved (Approved)
+  ├─> rejected (Rejected)
+  └─> cancelled (Cancelled)
 ```
 
-#### 路由
+#### Routes
 ```php
-// 前台申請
-GET  /frontend/hr/leave-request       // 請假表單
-POST /frontend/hr/leave-request       // 送出請假
+// Frontend applications
+GET  /frontend/hr/leave-request       // Leave request form
+POST /frontend/hr/leave-request       // Submit leave request
 
-// 後台管理
-GET  /backend/leave-types             // 假別列表
-POST /backend/leave-types             // 新增假別
-PUT  /backend/leave-types/{id}        // 更新假別
-DELETE /backend/leave-types/{id}      // 刪除假別
+// Backend management
+GET  /backend/leave-types             // Leave types list
+POST /backend/leave-types             // Create leave type
+PUT  /backend/leave-types/{id}        // Update leave type
+DELETE /backend/leave-types/{id}      // Delete leave type
 
-GET  /backend/leave-requests          // 請假審核列表
-PUT  /backend/leave-requests/{id}     // 審核請假
+GET  /backend/leave-requests          // Leave requests approval list
+PUT  /backend/leave-requests/{id}     // Approve/reject leave request
 ```
 
-### 4. 薪資管理模組
+### 4. Payroll Management Module
 
-#### 功能說明
-- 薪資期間管理
-- 薪資項目設定
-- 薪資計算批次
-- 保險級距管理
-- 績效考核記錄
-- 獎懲記錄
+#### Features
+- Payroll period management
+- Salary component settings
+- Payroll calculation batches
+- Insurance bracket management
+- Performance review records
+- Reward and penalty records
 
-#### 主要檔案
+#### Main Files
 - **Models**:
   - `PayrollPeriod.php`
   - `SalaryComponent.php`
@@ -373,111 +373,111 @@ PUT  /backend/leave-requests/{id}     // 審核請假
   - `2025_10_18_151135_create_payroll_tables.php`
   - `2025_10_19_150000_create_insurance_brackets_table.php`
 
-#### 資料表結構
+#### Table Structures
 
-**payroll_periods 表**
-- `id`: 主鍵
-- `company_id`: 所屬公司
-- `name`: 期間名稱
-- `start_date`: 開始日期
-- `end_date`: 結束日期
-- `payment_date`: 發放日期
-- `status`: 狀態 (draft/processing/completed/cancelled)
+**payroll_periods table**
+- `id`: Primary key
+- `company_id`: Parent company
+- `name`: Period name
+- `start_date`: Start date
+- `end_date`: End date
+- `payment_date`: Payment date
+- `status`: Status (draft/processing/completed/cancelled)
 - `timestamps`
 
-**salary_components 表**
-- `id`: 主鍵
-- `company_id`: 所屬公司
-- `code`: 項目代碼
-- `name`: 項目名稱
-- `type`: 類型 (earning/deduction)
-- `is_taxable`: 是否計稅
-- `is_active`: 啟用狀態
+**salary_components table**
+- `id`: Primary key
+- `company_id`: Parent company
+- `code`: Component code
+- `name`: Component name
+- `type`: Type (earning/deduction)
+- `is_taxable`: Is taxable
+- `is_active`: Active status
 - `timestamps`
 
-**payroll_runs 表**
-- `id`: 主鍵
-- `payroll_period_id`: 薪資期間
-- `name`: 批次名稱
-- `total_employees`: 總員工數
-- `total_amount`: 總金額
-- `status`: 狀態
-- `processed_at`: 處理時間
-- `processed_by`: 處理者
+**payroll_runs table**
+- `id`: Primary key
+- `payroll_period_id`: Payroll period
+- `name`: Batch name
+- `total_employees`: Total employees
+- `total_amount`: Total amount
+- `status`: Status
+- `processed_at`: Process timestamp
+- `processed_by`: Processor
 - `timestamps`
 
-**payroll_entries 表**
-- `id`: 主鍵
-- `payroll_run_id`: 薪資批次
-- `employee_id`: 員工 ID
-- `base_salary`: 本薪
-- `total_earnings`: 總收入
-- `total_deductions`: 總扣款
-- `net_salary`: 實發薪資
-- `payment_date`: 發放日期
-- `status`: 狀態
+**payroll_entries table**
+- `id`: Primary key
+- `payroll_run_id`: Payroll batch
+- `employee_id`: Employee ID
+- `base_salary`: Base salary
+- `total_earnings`: Total earnings
+- `total_deductions`: Total deductions
+- `net_salary`: Net salary
+- `payment_date`: Payment date
+- `status`: Status
 - `timestamps`
 
-**payroll_entry_components 表**
-- `id`: 主鍵
-- `payroll_entry_id`: 薪資條目
-- `salary_component_id`: 薪資項目
-- `amount`: 金額
-- `remarks`: 備註
+**payroll_entry_components table**
+- `id`: Primary key
+- `payroll_entry_id`: Payroll entry
+- `salary_component_id`: Salary component
+- `amount`: Amount
+- `remarks`: Remarks
 - `timestamps`
 
-**insurance_brackets 表**
-- `id`: 主鍵
-- `insurance_type`: 保險類型 (labor/health/pension)
-- `grade`: 級距
-- `monthly_salary_min`: 月薪下限
-- `monthly_salary_max`: 月薪上限
-- `insured_amount`: 投保金額
-- `employee_rate`: 員工負擔比率
-- `employer_rate`: 雇主負擔比率
-- `government_rate`: 政府負擔比率
-- `effective_date`: 生效日期
-- `expiry_date`: 失效日期
+**insurance_brackets table**
+- `id`: Primary key
+- `insurance_type`: Insurance type (labor/health/pension)
+- `grade`: Grade level
+- `monthly_salary_min`: Monthly salary minimum
+- `monthly_salary_max`: Monthly salary maximum
+- `insured_amount`: Insured amount
+- `employee_rate`: Employee contribution rate
+- `employer_rate`: Employer contribution rate
+- `government_rate`: Government contribution rate
+- `effective_date`: Effective date
+- `expiry_date`: Expiry date
 - `timestamps`
 
-**performance_reviews 表**
-- `id`: 主鍵
-- `employee_id`: 員工 ID
-- `reviewer_id`: 考核者
-- `review_period`: 考核期間
-- `score`: 分數
-- `comments`: 評語
-- `reviewed_at`: 考核日期
+**performance_reviews table**
+- `id`: Primary key
+- `employee_id`: Employee ID
+- `reviewer_id`: Reviewer ID
+- `review_period`: Review period
+- `score`: Score
+- `comments`: Comments
+- `reviewed_at`: Review date
 - `timestamps`
 
-**reward_records 表**
-- `id`: 主鍵
-- `employee_id`: 員工 ID
-- `type`: 類型 (reward/penalty)
-- `category`: 類別
-- `amount`: 金額
-- `reason`: 原因
-- `recorded_at`: 記錄日期
-- `recorded_by`: 記錄者
+**reward_records table**
+- `id`: Primary key
+- `employee_id`: Employee ID
+- `type`: Type (reward/penalty)
+- `category`: Category
+- `amount`: Amount
+- `reason`: Reason
+- `recorded_at`: Record date
+- `recorded_by`: Recorder
 - `timestamps`
 
-#### 路由
+#### Routes
 ```php
-GET  /backend/payroll                 // 薪資總覽
-POST /backend/payroll/periods         // 新增薪資期間
-POST /backend/payroll/runs            // 建立薪資批次
-GET  /backend/insurance-brackets      // 保險級距查詢
+GET  /backend/payroll                 // Payroll overview
+POST /backend/payroll/periods         // Create payroll period
+POST /backend/payroll/runs            // Create payroll batch
+GET  /backend/insurance-brackets      // Insurance brackets query
 ```
 
-### 5. 權限控制模組
+### 5. Access Control Module
 
-#### 功能說明
-- 角色定義與管理
-- 權限分配
-- 公司範圍權限
-- 操作審計日誌
+#### Features
+- Role definition and management
+- Permission assignment
+- Company-scoped permissions
+- Activity audit logs
 
-#### 主要檔案
+#### Main Files
 - **Models**:
   - `Role.php`
   - `Permission.php`
@@ -488,295 +488,295 @@ GET  /backend/insurance-brackets      // 保險級距查詢
 - **Seeders**: `AccessControlSeeder.php`
 - **Migration**: `2024_01_01_100400_create_access_control_tables.php`
 
-#### 資料表結構
+#### Table Structures
 
-**roles 表**
-- `id`: 主鍵
-- `name`: 角色名稱
-- `code`: 角色代碼
-- `description`: 描述
-- `is_system`: 系統角色
+**roles table**
+- `id`: Primary key
+- `name`: Role name
+- `code`: Role code
+- `description`: Description
+- `is_system`: Is system role
 - `timestamps`
 
-**permissions 表**
-- `id`: 主鍵
-- `name`: 權限名稱
-- `code`: 權限代碼
-- `module`: 所屬模組
-- `description`: 描述
+**permissions table**
+- `id`: Primary key
+- `name`: Permission name
+- `code`: Permission code
+- `module`: Module name
+- `description`: Description
 - `timestamps`
 
-**permission_role 表** (多對多樞紐表)
-- `role_id`: 角色 ID
-- `permission_id`: 權限 ID
+**permission_role table** (many-to-many pivot)
+- `role_id`: Role ID
+- `permission_id`: Permission ID
 
-**user_roles 表**
-- `id`: 主鍵
-- `user_id`: 使用者 ID
-- `role_id`: 角色 ID
+**user_roles table**
+- `id`: Primary key
+- `user_id`: User ID
+- `role_id`: Role ID
 - `timestamps`
 
-**role_scopes 表** (公司範圍權限)
-- `id`: 主鍵
-- `user_role_id`: 使用者角色
-- `company_id`: 公司 ID
+**role_scopes table** (company-scoped permissions)
+- `id`: Primary key
+- `user_role_id`: User role
+- `company_id`: Company ID
 - `timestamps`
 
-**activity_logs 表**
-- `id`: 主鍵
-- `user_id`: 操作者
-- `action`: 動作
-- `model_type`: 模型類型
-- `model_id`: 模型 ID
-- `old_values`: 舊值 (JSON)
-- `new_values`: 新值 (JSON)
-- `ip_address`: IP 位址
-- `user_agent`: 使用者代理
+**activity_logs table**
+- `id`: Primary key
+- `user_id`: User ID
+- `action`: Action
+- `model_type`: Model type
+- `model_id`: Model ID
+- `old_values`: Old values (JSON)
+- `new_values`: New values (JSON)
+- `ip_address`: IP address
+- `user_agent`: User agent
 - `timestamps`
 
-#### 預設角色與權限
+#### Default Roles & Permissions
 
-**系統角色**
-1. **System Owner** (系統擁有者)
-   - 完整系統管理權限
-   - 跨公司操作權限
+**System Roles**
+1. **System Owner**
+   - Full system administration permissions
+   - Cross-company operation permissions
 
-2. **Company Manager** (公司管理者)
-   - 公司內完整管理權限
-   - 人事、薪資、考勤管理
+2. **Company Manager**
+   - Full management permissions within company
+   - HR, payroll, attendance management
 
-3. **HR Manager** (人資主管)
-   - 員工資料管理
-   - 出勤假勤管理
-   - 薪資檢視權限
+3. **HR Manager**
+   - Employee data management
+   - Attendance and leave management
+   - Payroll view permissions
 
-4. **Department Manager** (部門主管)
-   - 部門員工管理
-   - 請假審核權限
-   - 出勤查詢權限
+4. **Department Manager**
+   - Department employee management
+   - Leave approval permissions
+   - Attendance query permissions
 
-5. **Employee** (一般員工)
-   - 個人資料查看
-   - 打卡、請假申請
-   - 薪資查詢
+5. **Employee**
+   - Personal data view
+   - Clock in/out, leave requests
+   - Payroll query
 
-**權限列表**
-- `backend.access` - 後台存取
-- `company.manage` - 公司管理
-- `department.manage` - 部門管理
-- `employee.manage` - 員工管理
-- `attendance.manage` - 出勤管理
-- `leave.manage` - 請假管理
-- `payroll.view` - 薪資檢視
-- `payroll.manage` - 薪資管理
-- `frontend.portal.access` - 員工入口存取
-- `frontend.leave.submit` - 請假申請
+**Permission List**
+- `backend.access` - Backend access
+- `company.manage` - Company management
+- `department.manage` - Department management
+- `employee.manage` - Employee management
+- `attendance.manage` - Attendance management
+- `leave.manage` - Leave management
+- `payroll.view` - Payroll view
+- `payroll.manage` - Payroll management
+- `frontend.portal.access` - Employee portal access
+- `frontend.leave.submit` - Leave request submission
 
 ---
 
-## 數據庫架構
+## Database Architecture
 
-### 資料表關聯圖
+### Entity Relationship Diagram
 
 ```
-users (使用者)
-  ├─ employees (員工資料)
-  │    ├─ companies (公司)
-  │    ├─ departments (部門)
-  │    ├─ positions (職位)
-  │    │    └─ position_levels (職級)
-  │    ├─ employee_contacts (聯絡資訊)
-  │    ├─ employee_addresses (地址資訊)
-  │    ├─ employment_contracts (僱傭合約)
-  │    ├─ attendance_logs (出勤記錄)
-  │    ├─ attendance_summaries (出勤摘要)
-  │    ├─ leave_requests (請假申請)
-  │    ├─ leave_balances (假勤餘額)
-  │    ├─ payroll_entries (薪資條目)
-  │    ├─ performance_reviews (績效考核)
-  │    └─ reward_records (獎懲記錄)
-  └─ user_roles (使用者角色)
-       ├─ roles (角色)
-       │    └─ permissions (權限)
-       └─ role_scopes (角色範圍)
+users (Users)
+  ├─ employees (Employee Data)
+  │    ├─ companies (Companies)
+  │    ├─ departments (Departments)
+  │    ├─ positions (Positions)
+  │    │    └─ position_levels (Position Levels)
+  │    ├─ employee_contacts (Contact Information)
+  │    ├─ employee_addresses (Address Information)
+  │    ├─ employment_contracts (Employment Contracts)
+  │    ├─ attendance_logs (Attendance Records)
+  │    ├─ attendance_summaries (Attendance Summaries)
+  │    ├─ leave_requests (Leave Requests)
+  │    ├─ leave_balances (Leave Balances)
+  │    ├─ payroll_entries (Payroll Entries)
+  │    ├─ performance_reviews (Performance Reviews)
+  │    └─ reward_records (Reward Records)
+  └─ user_roles (User Roles)
+       ├─ roles (Roles)
+       │    └─ permissions (Permissions)
+       └─ role_scopes (Role Scopes)
 
-companies (公司)
-  ├─ departments (部門)
-  ├─ positions (職位)
-  ├─ employees (員工)
-  ├─ leave_types (假別)
-  ├─ salary_components (薪資項目)
-  └─ payroll_periods (薪資期間)
-       └─ payroll_runs (薪資批次)
-            └─ payroll_entries (薪資條目)
+companies (Companies)
+  ├─ departments (Departments)
+  ├─ positions (Positions)
+  ├─ employees (Employees)
+  ├─ leave_types (Leave Types)
+  ├─ salary_components (Salary Components)
+  └─ payroll_periods (Payroll Periods)
+       └─ payroll_runs (Payroll Runs)
+            └─ payroll_entries (Payroll Entries)
 ```
 
-### 索引策略
-- 所有外鍵欄位建立索引
-- 經常查詢的欄位 (如 `employee_number`, `id_number`) 建立唯一索引
-- 時間欄位 (如 `recorded_at`, `created_at`) 建立索引
-- 複合索引用於多條件查詢 (如 `employee_id + date`)
+### Index Strategy
+- Create indexes on all foreign key columns
+- Create unique indexes on frequently queried columns (e.g., `employee_number`, `id_number`)
+- Create indexes on timestamp columns (e.g., `recorded_at`, `created_at`)
+- Create composite indexes for multi-condition queries (e.g., `employee_id + date`)
 
 ---
 
-## 權限與角色系統
+## Permission & Role System
 
-### 中介層 (Middleware)
+### Middleware
 
 ```php
-// 檢查權限
+// Check permissions
 Route::middleware(['auth', 'permission:backend.access'])
 
-// 範例
+// Example
 Route::get('/backend/payroll', [PayrollController::class, 'index'])
     ->middleware('permission:payroll.view');
 ```
 
-### 權限檢查方法
+### Permission Check Methods
 
 ```php
-// 在控制器中
+// In controllers
 if (auth()->user()->hasPermission('payroll.manage')) {
-    // 執行操作
+    // Execute operation
 }
 
-// 在 Blade 中
+// In Blade templates
 @can('payroll.manage')
-    <button>編輯薪資</button>
+    <button>Edit Payroll</button>
 @endcan
 
-// 檢查公司範圍權限
+// Check company-scoped permissions
 $user->hasCompanyAccess($companyId);
 ```
 
-### 公司範圍權限
+### Company-Scoped Permissions
 
-使用 `role_scopes` 表限制使用者只能操作特定公司的資料：
+Use `role_scopes` table to restrict users to specific company data:
 
 ```php
-// 取得使用者可存取的公司
+// Get user's accessible companies
 $companies = auth()->user()->accessibleCompanies();
 
-// 在查詢中套用範圍
+// Apply scope in queries
 Employee::whereIn('company_id', $companies->pluck('id'))->get();
 ```
 
 ---
 
-## 路由設計
+## Routing Design
 
-### 認證路由
+### Authentication Routes
 ```php
-GET  /login              // 登入頁面
-POST /login              // 處理登入
-POST /logout             // 登出
+GET  /login              // Login page
+POST /login              // Process login
+POST /logout             // Logout
 ```
 
-### 前台路由 (Frontend)
+### Frontend Routes (Employee Portal)
 ```php
-// 首頁
-GET  /                                    // 首頁
-GET  /frontend                            // 員工入口
+// Home
+GET  /                                    // Home page
+GET  /frontend                            // Employee portal
 
-// 員工自助中心 (需 frontend.portal.access)
-GET  /frontend/hr                         // 自助中心首頁
-POST /frontend/attendance/check-in        // 上班打卡
-POST /frontend/attendance/check-out       // 下班打卡
+// Employee self-service (requires frontend.portal.access)
+GET  /frontend/hr                         // Self-service center
+POST /frontend/attendance/check-in        // Check in
+POST /frontend/attendance/check-out       // Check out
 
-// 請假申請 (需 frontend.leave.submit)
-GET  /frontend/hr/leave-request           // 請假表單
-POST /frontend/hr/leave-request           // 送出請假
+// Leave requests (requires frontend.leave.submit)
+GET  /frontend/hr/leave-request           // Leave request form
+POST /frontend/hr/leave-request           // Submit leave request
 ```
 
-### 後台路由 (Backend)
+### Backend Routes (Admin Panel)
 ```php
-// 總覽 (需 backend.access)
-GET  /backend                             // 後台總覽
-GET  /backend/hr                          // 人資總覽
+// Dashboard (requires backend.access)
+GET  /backend                             // Backend dashboard
+GET  /backend/hr                          // HR dashboard
 
-// 公司管理
-GET     /backend/companies                // 公司列表
-GET     /backend/companies/create         // 新增表單
-POST    /backend/companies                // 儲存新公司
-GET     /backend/companies/{id}/edit      // 編輯表單
-PUT     /backend/companies/{id}           // 更新公司
-DELETE  /backend/companies/{id}           // 刪除公司
+// Company management
+GET     /backend/companies                // Companies list
+GET     /backend/companies/create         // Create form
+POST    /backend/companies                // Store company
+GET     /backend/companies/{id}/edit      // Edit form
+PUT     /backend/companies/{id}           // Update company
+DELETE  /backend/companies/{id}           // Delete company
 
-// 部門管理
-GET     /backend/departments              // 部門列表
-POST    /backend/departments              // 新增部門
-PUT     /backend/departments/{id}         // 更新部門
-DELETE  /backend/departments/{id}         // 刪除部門
+// Department management
+GET     /backend/departments              // Departments list
+POST    /backend/departments              // Create department
+PUT     /backend/departments/{id}         // Update department
+DELETE  /backend/departments/{id}         // Delete department
 
-// 職位管理
-GET     /backend/positions                // 職位列表
-POST    /backend/positions                // 新增職位
-PUT     /backend/positions/{id}           // 更新職位
-DELETE  /backend/positions/{id}           // 刪除職位
+// Position management
+GET     /backend/positions                // Positions list
+POST    /backend/positions                // Create position
+PUT     /backend/positions/{id}           // Update position
+DELETE  /backend/positions/{id}           // Delete position
 
-// 員工管理
-GET     /backend/employees                // 員工列表
-GET     /backend/employees/create         // 新增表單
-POST    /backend/employees                // 新增員工
-GET     /backend/employees/{id}/edit      // 編輯表單
-PUT     /backend/employees/{id}           // 更新員工
-DELETE  /backend/employees/{id}           // 刪除員工
-POST    /backend/employees/{id}/block     // 封鎖員工
-POST    /backend/employees/{id}/unblock   // 解封員工
+// Employee management
+GET     /backend/employees                // Employees list
+GET     /backend/employees/create         // Create form
+POST    /backend/employees                // Create employee
+GET     /backend/employees/{id}/edit      // Edit form
+PUT     /backend/employees/{id}           // Update employee
+DELETE  /backend/employees/{id}           // Delete employee
+POST    /backend/employees/{id}/block     // Block employee
+POST    /backend/employees/{id}/unblock   // Unblock employee
 
-// 出勤管理 (需 attendance.manage)
-GET     /backend/attendance               // 出勤記錄
-POST    /backend/attendance               // 補登記錄
+// Attendance management (requires attendance.manage)
+GET     /backend/attendance               // Attendance records
+POST    /backend/attendance               // Manual entry
 
-// 假別管理 (需 leave.manage)
-GET     /backend/leave-types              // 假別列表
-POST    /backend/leave-types              // 新增假別
-PUT     /backend/leave-types/{id}         // 更新假別
-DELETE  /backend/leave-types/{id}         // 刪除假別
+// Leave type management (requires leave.manage)
+GET     /backend/leave-types              // Leave types list
+POST    /backend/leave-types              // Create leave type
+PUT     /backend/leave-types/{id}         // Update leave type
+DELETE  /backend/leave-types/{id}         // Delete leave type
 
-// 請假審核 (需 leave.manage)
-GET     /backend/leave-requests           // 請假列表
-PUT     /backend/leave-requests/{id}      // 審核請假
+// Leave approval (requires leave.manage)
+GET     /backend/leave-requests           // Leave requests list
+PUT     /backend/leave-requests/{id}      // Approve/reject request
 
-// 薪資管理 (需 payroll.view)
-GET     /backend/payroll                  // 薪資總覽
-POST    /backend/payroll/periods          // 新增期間 (需 payroll.manage)
-POST    /backend/payroll/runs             // 新增批次 (需 payroll.manage)
+// Payroll management (requires payroll.view)
+GET     /backend/payroll                  // Payroll overview
+POST    /backend/payroll/periods          // Create period (requires payroll.manage)
+POST    /backend/payroll/runs             // Create batch (requires payroll.manage)
 
-// 保險級距 (需 payroll.view)
-GET     /backend/insurance-brackets       // 級距查詢
+// Insurance brackets (requires payroll.view)
+GET     /backend/insurance-brackets       // Brackets query
 ```
 
 ---
 
-## 前端架構
+## Frontend Architecture
 
-### Blade 版面配置
+### Blade Layout
 
-**主版面**: `resources/views/layouts/app.blade.php`
+**Main Layout**: `resources/views/layouts/app.blade.php`
 
 ```blade
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'ERP 系統')</title>
+    <title>@yield('title', 'ERP System')</title>
     
     <!-- Bootstrap 5.3.x -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
     
-    <!-- 自訂樣式 -->
+    <!-- Custom styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     
     @stack('styles')
 </head>
 <body>
-    <!-- 導航列 -->
+    <!-- Navigation bar -->
     @include('components.navbar')
     
-    <!-- 主要內容 -->
+    <!-- Main content -->
     <main class="container-fluid py-4">
         @yield('content')
     </main>
@@ -792,62 +792,62 @@ GET     /backend/insurance-brackets       // 級距查詢
 </html>
 ```
 
-### 前台頁面範例
+### Frontend Page Examples
 
-**出勤打卡頁面**: `resources/views/frontend/index.blade.php`
-- 顯示目前時間
-- 上班/下班打卡按鈕
-- 最近 10 筆打卡記錄
-- 使用 AJAX 送出表單
+**Attendance Clock Page**: `resources/views/frontend/index.blade.php`
+- Display current time
+- Check-in/check-out buttons
+- Last 10 clock records
+- AJAX form submission
 
-**請假申請頁面**: `resources/views/frontend/hr/leave-request.blade.php`
-- 假別選擇
-- 日期範圍選擇器
-- 請假事由輸入
-- 表單驗證
+**Leave Request Page**: `resources/views/frontend/hr/leave-request.blade.php`
+- Leave type selection
+- Date range picker
+- Leave reason input
+- Form validation
 
-### 後台頁面範例
+### Backend Page Examples
 
-**員工管理頁面**: `resources/views/backend/employees/index.blade.php`
-- 資料表格 (搜尋、分頁)
-- 新增/編輯/刪除按鈕
-- 封鎖/解封功能
-- 匯出功能
+**Employee Management Page**: `resources/views/backend/employees/index.blade.php`
+- Data table (search, pagination)
+- Create/edit/delete buttons
+- Block/unblock functionality
+- Export functionality
 
-**出勤管理頁面**: `resources/views/backend/attendance/index.blade.php`
-- 員工篩選器
-- 日期範圍選擇
-- 打卡記錄表格
-- 補登表單
+**Attendance Management Page**: `resources/views/backend/attendance/index.blade.php`
+- Employee filters
+- Date range selection
+- Clock records table
+- Manual entry form
 
-### 自訂樣式
+### Custom Styles
 
 **public/css/app.css**
 ```css
-/* 導航列樣式 */
+/* Navigation bar styles */
 .navbar-brand {
     font-weight: bold;
 }
 
-/* 側邊欄 */
+/* Sidebar */
 .sidebar {
     min-height: calc(100vh - 56px);
     background-color: #f8f9fa;
 }
 
-/* 卡片樣式 */
+/* Card styles */
 .card-hover:hover {
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
 }
 
-/* 表格樣式 */
+/* Table styles */
 .table-action-buttons .btn {
     padding: 0.25rem 0.5rem;
     font-size: 0.875rem;
 }
 
-/* 狀態標籤 */
+/* Status badges */
 .badge-pending {
     background-color: #ffc107;
 }
@@ -861,12 +861,12 @@ GET     /backend/insurance-brackets       // 級距查詢
 }
 ```
 
-### JavaScript 互動
+### JavaScript Interactions
 
-使用 jQuery 處理常見互動：
+Use jQuery for common interactions:
 
 ```javascript
-// AJAX 表單送出
+// AJAX form submission
 $('#attendance-form').on('submit', function(e) {
     e.preventDefault();
     
@@ -875,73 +875,73 @@ $('#attendance-form').on('submit', function(e) {
         method: 'POST',
         data: $(this).serialize(),
         success: function(response) {
-            // 顯示成功訊息
-            alert('打卡成功！');
-            // 重新載入記錄
+            // Show success message
+            alert('Clock in successful!');
+            // Reload records
             location.reload();
         },
         error: function(xhr) {
-            alert('打卡失敗，請稍後再試。');
+            alert('Clock in failed, please try again.');
         }
     });
 });
 
-// 日期範圍選擇器
+// Date range picker
 $('#date-range').daterangepicker({
     locale: {
         format: 'YYYY-MM-DD'
     }
 });
 
-// 確認刪除
+// Confirm deletion
 $('.delete-btn').on('click', function() {
-    return confirm('確定要刪除此項目嗎？');
+    return confirm('Are you sure you want to delete this item?');
 });
 ```
 
 ---
 
-## 開發環境設置
+## Development Environment Setup
 
-### 系統需求
+### System Requirements
 - PHP >= 8.2
 - Composer
-- SQLite 或 MySQL
+- SQLite or MySQL
 - Git
 
-### 安裝步驟
+### Installation Steps
 
-#### 1. 克隆專案
+#### 1. Clone Repository
 ```bash
 git clone <repository-url> erp-dev
 cd erp-dev
 ```
 
-#### 2. 安裝依賴
+#### 2. Install Dependencies
 ```bash
 composer install
 ```
 
-#### 3. 環境設定
+#### 3. Environment Configuration
 ```bash
-# 複製環境變數檔案
+# Copy environment file
 cp .env.example .env
 
-# 產生應用程式金鑰
+# Generate application key
 php artisan key:generate
 ```
 
-#### 4. 設定資料庫
+#### 4. Configure Database
 
-編輯 `.env` 檔案：
+Edit `.env` file:
 
-**使用 SQLite (開發環境)**
+**Using SQLite (Development)**
 ```env
 DB_CONNECTION=sqlite
 DB_DATABASE=/absolute/path/to/database/database.sqlite
 ```
 
-**使用 MySQL (生產環境)**
+**Using MySQL (Production)**
 ```env
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
@@ -951,112 +951,112 @@ DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-#### 5. 執行遷移與填充資料
+#### 5. Run Migrations & Seed Data
 ```bash
-# 建立資料表並填充測試資料
+# Create tables and seed test data
 php artisan migrate --seed
 
-# 或分開執行
+# Or run separately
 php artisan migrate
 php artisan db:seed
 ```
 
-#### 6. 啟動開發伺服器
+#### 6. Start Development Server
 ```bash
 php artisan serve
 ```
 
-預設網址：http://localhost:8000
+Default URL: http://localhost:8000
 
-### 資料填充說明
+### Seeder Description
 
-執行 `php artisan db:seed` 會依序執行：
+Running `php artisan db:seed` executes in order:
 
-1. **AccessControlSeeder** - 建立角色與權限
-2. **AdminUserSeeder** - 建立系統管理員帳號
-3. **PositionLevelSeeder** - 建立職級資料
-4. **InsuranceBracketSeeder** - 建立保險級距資料
-5. **LeaveTypeSeeder** - 建立假別資料
-6. **CompanyDataSeeder** - 建立範例公司、部門、職位
-7. **FrontendUserSeeder** - 建立前台測試帳號
-
----
-
-## 測試帳號
-
-### 後台管理帳號
-
-| 帳號 | 密碼 | 角色 | 權限 |
-|------|------|------|------|
-| admin@erp.local | password | System Owner | 完整系統管理權限 |
-
-**說明**：
-- 由 `AdminUserSeeder` 建立
-- 具備所有後台管理權限
-- 可跨公司操作
-- **請登入後立即修改密碼**
-
-### 前台員工帳號
-
-| 帳號 | 密碼 | 角色 | 所屬公司 | 部門 | 職位 |
-|------|------|------|----------|------|------|
-| employee1@erp.local | password | Employee | Alpha Manufacturing | 研發部 | 資深工程師 |
-| employee2@erp.local | password | Employee | Alpha Manufacturing | 業務部 | 業務專員 |
-| manager@erp.local | password | Company Manager | Alpha Manufacturing | 管理部 | 總經理 |
-
-**說明**：
-- 由 `FrontendUserSeeder` 建立
-- 具備前台打卡、請假權限
-- Manager 帳號額外具備審核權限
-
-### 範例公司資料
-
-#### Alpha Manufacturing (製造業)
-- **部門**：
-  - 管理部 (總經理、特助)
-  - 研發部 (研發經理、資深工程師、工程師)
-  - 生產部 (生產經理、組長、作業員)
-  - 業務部 (業務經理、業務專員)
-- **員工數**：15 人
-
-#### Beta Logistics (物流業)
-- **部門**：
-  - 管理部 (總經理)
-  - 營運部 (營運經理、調度員)
-  - 倉儲部 (倉管、理貨員)
-- **員工數**：10 人
+1. **AccessControlSeeder** - Create roles and permissions
+2. **AdminUserSeeder** - Create system admin account
+3. **PositionLevelSeeder** - Create position level data
+4. **InsuranceBracketSeeder** - Create insurance bracket data
+5. **LeaveTypeSeeder** - Create leave type data
+6. **CompanyDataSeeder** - Create sample companies, departments, positions
+7. **FrontendUserSeeder** - Create frontend test accounts
 
 ---
 
-## 開發規範
+## Test Accounts
 
-### 程式碼風格
+### Backend Admin Accounts
 
-#### PSR-12 標準
-- 四空格縮排（不使用 Tab）
-- 類別採用 PascalCase
-- 方法採用 camelCase
-- 常數採用 UPPER_SNAKE_CASE
+| Email | Password | Role | Permissions |
+|-------|----------|------|-------------|
+| admin@erp.local | password | System Owner | Full system administration |
 
-#### Laravel 慣例
-- 模型命名：單數名詞 (User, Employee)
-- 控制器命名：複數 + Controller (UsersController)
-- 資料表命名：複數蛇底式 (users, employees)
-- 欄位命名：蛇底式 (first_name, created_at)
+**Notes**:
+- Created by `AdminUserSeeder`
+- Has all backend management permissions
+- Can operate across companies
+- **Please change password immediately after first login**
 
-### 格式化工具
+### Frontend Employee Accounts
+
+| Email | Password | Role | Company | Department | Position |
+|-------|----------|------|---------|------------|----------|
+| employee1@erp.local | password | Employee | Alpha Manufacturing | R&D Dept | Senior Engineer |
+| employee2@erp.local | password | Employee | Alpha Manufacturing | Sales Dept | Sales Specialist |
+| manager@erp.local | password | Company Manager | Alpha Manufacturing | Admin Dept | General Manager |
+
+**Notes**:
+- Created by `FrontendUserSeeder`
+- Have frontend clock in/out and leave request permissions
+- Manager account has additional approval permissions
+
+### Sample Company Data
+
+#### Alpha Manufacturing
+- **Departments**:
+  - Admin Dept (General Manager, Executive Assistant)
+  - R&D Dept (R&D Manager, Senior Engineer, Engineer)
+  - Production Dept (Production Manager, Team Leader, Operator)
+  - Sales Dept (Sales Manager, Sales Specialist)
+- **Employee Count**: 15
+
+#### Beta Logistics
+- **Departments**:
+  - Admin Dept (General Manager)
+  - Operations Dept (Operations Manager, Dispatcher)
+  - Warehouse Dept (Warehouse Manager, Stockkeeper)
+- **Employee Count**: 10
+
+---
+
+## Development Guidelines
+
+### Code Style
+
+#### PSR-12 Standard
+- 4-space indentation (no tabs)
+- Classes use PascalCase
+- Methods use camelCase
+- Constants use UPPER_SNAKE_CASE
+
+#### Laravel Conventions
+- Model naming: Singular noun (User, Employee)
+- Controller naming: Plural + Controller (UsersController)
+- Table naming: Plural snake_case (users, employees)
+- Column naming: snake_case (first_name, created_at)
+
+### Formatting Tool
 
 ```bash
-# 執行 Laravel Pint 格式化
+# Run Laravel Pint formatting
 ./vendor/bin/pint
 
-# 檢查但不修改
+# Check without modifying
 ./vendor/bin/pint --test
 ```
 
-### Git 提交規範
+### Git Commit Guidelines
 
-#### Commit Message 格式
+#### Commit Message Format
 ```
 <type>: <subject>
 
@@ -1065,16 +1065,16 @@ php artisan serve
 <footer>
 ```
 
-**類型 (type)**：
-- `feat`: 新功能
-- `fix`: 錯誤修復
-- `docs`: 文件更新
-- `style`: 程式碼格式調整
-- `refactor`: 重構
-- `test`: 測試相關
-- `chore`: 建置工具或輔助工具變動
+**Types**:
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation update
+- `style`: Code formatting
+- `refactor`: Code refactoring
+- `test`: Test-related
+- `chore`: Build tools or auxiliary tools changes
 
-**範例**：
+**Example**:
 ```
 feat: add employee blocking functionality
 
@@ -1086,41 +1086,41 @@ Implement block/unblock features for employee management:
 Closes #42
 ```
 
-#### 分支策略
+#### Branching Strategy
 
 ```
-main (生產環境)
-  └─ develop (開發環境)
-       ├─ feature/attendance-module (功能分支)
-       ├─ feature/leave-management (功能分支)
-       └─ bugfix/fix-login-redirect (修復分支)
+main (Production)
+  └─ develop (Development)
+       ├─ feature/attendance-module (Feature branch)
+       ├─ feature/leave-management (Feature branch)
+       └─ bugfix/fix-login-redirect (Bugfix branch)
 ```
 
-**流程**：
-1. 從 `develop` 建立 feature 分支
-2. 完成開發並通過測試
-3. 建立 Pull Request 到 `develop`
-4. Code Review 通過後合併
-5. 定期從 `develop` 合併到 `main`
+**Workflow**:
+1. Create feature branch from `develop`
+2. Complete development and pass tests
+3. Create Pull Request to `develop`
+4. Merge after Code Review approval
+5. Periodically merge `develop` to `main`
 
-### 測試規範
+### Testing Guidelines
 
-#### 執行測試
+#### Run Tests
 ```bash
-# 執行所有測試
+# Run all tests
 php artisan test
 
-# 執行特定測試檔案
+# Run specific test file
 php artisan test tests/Feature/EmployeeAccessTest.php
 
-# 顯示詳細輸出
+# Show detailed output
 php artisan test --parallel --coverage
 ```
 
-#### 測試命名
+#### Test Naming
 
 ```php
-// 功能測試
+// Feature tests
 class EmployeeManagementTest extends TestCase
 {
     public function test_admin_can_create_employee(): void
@@ -1154,7 +1154,7 @@ class EmployeeManagementTest extends TestCase
 }
 ```
 
-#### 測試組織
+#### Test Organization
 
 ```
 tests/
@@ -1175,61 +1175,61 @@ tests/
         └── PayrollCalculatorTest.php
 ```
 
-### 安全性考量
+### Security Considerations
 
-#### 1. 防止 SQL Injection
+#### 1. Prevent SQL Injection
 ```php
-// ✅ 正確：使用參數綁定
+// ✅ Correct: Use parameter binding
 Employee::where('employee_number', $number)->first();
 
-// ❌ 錯誤：直接拼接
+// ❌ Wrong: Direct concatenation
 DB::select("SELECT * FROM employees WHERE employee_number = '$number'");
 ```
 
-#### 2. 防止 XSS
+#### 2. Prevent XSS
 ```blade
-{{-- ✅ 正確：自動跳脫 --}}
+{{-- ✅ Correct: Auto-escaped --}}
 {{ $employee->full_name }}
 
-{{-- ❌ 錯誤：原始輸出 --}}
+{{-- ❌ Wrong: Raw output --}}
 {!! $employee->full_name !!}
 ```
 
-#### 3. CSRF 保護
+#### 3. CSRF Protection
 ```blade
 <form method="POST" action="/backend/employees">
     @csrf
-    <!-- 表單欄位 -->
+    <!-- Form fields -->
 </form>
 ```
 
-#### 4. Mass Assignment 保護
+#### 4. Mass Assignment Protection
 ```php
 class Employee extends Model
 {
     protected $fillable = [
         'employee_number',
         'full_name',
-        // 明確列出可填充欄位
+        // Explicitly list fillable fields
     ];
     
     protected $guarded = [
         'id',
         'is_blocked',
-        // 保護敏感欄位
+        // Protect sensitive fields
     ];
 }
 ```
 
-#### 5. 權限檢查
+#### 5. Permission Checks
 ```php
-// 在控制器中
+// In controllers
 public function destroy(Employee $employee)
 {
-    // 檢查權限
+    // Check permission
     abort_unless(auth()->user()->can('employee.manage'), 403);
     
-    // 檢查公司範圍
+    // Check company scope
     abort_unless(
         auth()->user()->hasCompanyAccess($employee->company_id),
         403
@@ -1243,14 +1243,14 @@ public function destroy(Employee $employee)
 
 ---
 
-## API 文件
+## API Documentation
 
-### 認證
+### Authentication
 
-使用 Laravel Sanctum 進行 API 認證：
+Use Laravel Sanctum for API authentication:
 
 ```bash
-# 取得 Token
+# Get Token
 POST /api/login
 Content-Type: application/json
 
@@ -1259,7 +1259,7 @@ Content-Type: application/json
     "password": "password"
 }
 
-# 回應
+# Response
 {
     "token": "1|abc123...",
     "user": {
@@ -1270,124 +1270,124 @@ Content-Type: application/json
 }
 ```
 
-使用 Token：
+Use Token:
 ```bash
 GET /api/employees
 Authorization: Bearer 1|abc123...
 ```
 
-### API 端點
+### API Endpoints
 
-#### 員工資源
+#### Employee Resource
 ```bash
-# 取得員工列表
+# Get employees list
 GET /api/employees
 Query Parameters:
-  - page: 頁碼 (預設 1)
-  - per_page: 每頁筆數 (預設 15)
-  - search: 搜尋關鍵字
-  - company_id: 公司 ID
-  - department_id: 部門 ID
+  - page: Page number (default 1)
+  - per_page: Items per page (default 15)
+  - search: Search keyword
+  - company_id: Company ID
+  - department_id: Department ID
 
-# 取得單一員工
+# Get single employee
 GET /api/employees/{id}
 
-# 建立員工
+# Create employee
 POST /api/employees
 Content-Type: application/json
 
 {
     "employee_number": "E001",
-    "full_name": "張三",
+    "full_name": "John Doe",
     "company_id": 1,
     "department_id": 1,
     "position_id": 1,
     "hire_date": "2025-01-01"
 }
 
-# 更新員工
+# Update employee
 PUT /api/employees/{id}
 
-# 刪除員工
+# Delete employee
 DELETE /api/employees/{id}
 ```
 
-#### 出勤資源
+#### Attendance Resource
 ```bash
-# 打卡
+# Clock in/out
 POST /api/attendance/check-in
 POST /api/attendance/check-out
 
-# 取得出勤記錄
+# Get attendance records
 GET /api/attendance/logs?employee_id={id}&start_date={date}&end_date={date}
 
-# 取得出勤摘要
+# Get attendance summary
 GET /api/attendance/summary?employee_id={id}&month={YYYY-MM}
 ```
 
-#### 請假資源
+#### Leave Resource
 ```bash
-# 送出請假
+# Submit leave request
 POST /api/leave-requests
 {
     "leave_type_id": 1,
     "start_date": "2025-01-10",
     "end_date": "2025-01-12",
-    "reason": "家庭事務"
+    "reason": "Family matters"
 }
 
-# 取得請假記錄
+# Get leave requests
 GET /api/leave-requests?status=pending
 
-# 審核請假
+# Approve/reject leave request
 PUT /api/leave-requests/{id}/approve
 PUT /api/leave-requests/{id}/reject
 {
-    "remarks": "核准/拒絕原因"
+    "remarks": "Approval/rejection reason"
 }
 ```
 
-### 錯誤處理
+### Error Handling
 
-API 錯誤回應格式：
+API error response format:
 
 ```json
 {
     "message": "The given data was invalid.",
     "errors": {
         "employee_number": [
-            "員工編號已存在"
+            "The employee number has already been taken."
         ],
         "email": [
-            "Email 格式不正確"
+            "The email format is invalid."
         ]
     }
 }
 ```
 
-HTTP 狀態碼：
-- `200` - 成功
-- `201` - 建立成功
-- `204` - 刪除成功
-- `400` - 請求錯誤
-- `401` - 未認證
-- `403` - 權限不足
-- `404` - 資源不存在
-- `422` - 驗證失敗
-- `500` - 伺服器錯誤
+HTTP Status Codes:
+- `200` - Success
+- `201` - Created
+- `204` - Deleted
+- `400` - Bad Request
+- `401` - Unauthorized
+- `403` - Forbidden
+- `404` - Not Found
+- `422` - Validation Failed
+- `500` - Server Error
 
 ---
 
-## 部署指南
+## Deployment Guide
 
-### 生產環境設定
+### Production Environment Configuration
 
-#### 1. 環境變數設定
+#### 1. Environment Variables
 
-編輯 `.env` 檔案：
+Edit `.env` file:
 
 ```env
-APP_NAME="ERP 系統"
+APP_NAME="ERP System"
 APP_ENV=production
 APP_DEBUG=false
 APP_URL=https://erp.example.com
@@ -1417,46 +1417,46 @@ MAIL_FROM_ADDRESS=noreply@example.com
 MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-#### 2. 優化設定
+#### 2. Optimization
 
 ```bash
-# 清除並快取設定
+# Clear and cache configuration
 php artisan config:cache
 
-# 快取路由
+# Cache routes
 php artisan route:cache
 
-# 快取視圖
+# Cache views
 php artisan view:cache
 
-# 優化 Composer 自動載入
+# Optimize Composer autoload
 composer install --optimize-autoloader --no-dev
 ```
 
-#### 3. 資料庫遷移
+#### 3. Database Migrations
 
 ```bash
-# 執行遷移（注意：生產環境建議先備份）
+# Run migrations (Note: Backup production database first)
 php artisan migrate --force
 
-# 填充基礎資料（不包含測試資料）
+# Seed base data (without test data)
 php artisan db:seed --class=AccessControlSeeder
 php artisan db:seed --class=PositionLevelSeeder
 php artisan db:seed --class=InsuranceBracketSeeder
 php artisan db:seed --class=LeaveTypeSeeder
 ```
 
-#### 4. 檔案權限設定
+#### 4. File Permissions
 
 ```bash
-# 設定 storage 和 bootstrap/cache 可寫入
+# Set storage and bootstrap/cache writable
 chmod -R 775 storage bootstrap/cache
 chown -R www-data:www-data storage bootstrap/cache
 ```
 
-### Web 伺服器設定
+### Web Server Configuration
 
-#### Nginx 設定範例
+#### Nginx Configuration Example
 
 ```nginx
 server {
@@ -1493,9 +1493,9 @@ server {
 }
 ```
 
-#### Apache 設定範例
+#### Apache Configuration Example
 
-確保 `.htaccess` 檔案存在於 `public/` 目錄：
+Ensure `.htaccess` file exists in `public/` directory:
 
 ```apache
 <IfModule mod_rewrite.c>
@@ -1506,38 +1506,38 @@ server {
 </IfModule>
 ```
 
-### SSL 憑證設定
+### SSL Certificate Setup
 
-使用 Let's Encrypt：
+Using Let's Encrypt:
 
 ```bash
-# 安裝 Certbot
+# Install Certbot
 sudo apt install certbot python3-certbot-nginx
 
-# 取得憑證
+# Obtain certificate
 sudo certbot --nginx -d erp.example.com
 
-# 自動更新設定
+# Auto-renewal setup
 sudo certbot renew --dry-run
 ```
 
-### 背景任務設定
+### Background Tasks Setup
 
-#### Cron 排程
+#### Cron Scheduler
 
-編輯 crontab：
+Edit crontab:
 ```bash
 crontab -e
 ```
 
-新增：
+Add:
 ```
 * * * * * cd /var/www/erp-dev && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 #### Queue Worker (Supervisor)
 
-建立設定檔 `/etc/supervisor/conf.d/erp-worker.conf`：
+Create configuration file `/etc/supervisor/conf.d/erp-worker.conf`:
 
 ```ini
 [program:erp-worker]
@@ -1554,18 +1554,18 @@ stdout_logfile=/var/www/erp-dev/storage/logs/worker.log
 stopwaitsecs=3600
 ```
 
-啟動：
+Start:
 ```bash
 sudo supervisorctl reread
 sudo supervisorctl update
 sudo supervisorctl start erp-worker:*
 ```
 
-### 備份策略
+### Backup Strategy
 
-#### 資料庫備份
+#### Database Backup
 
-建立備份腳本 `backup-db.sh`：
+Create backup script `backup-db.sh`:
 
 ```bash
 #!/bin/bash
@@ -1580,19 +1580,19 @@ mkdir -p $BACKUP_DIR
 
 mysqldump -u $DB_USER -p$DB_PASS $DB_NAME | gzip > $BACKUP_DIR/db_backup_$DATE.sql.gz
 
-# 保留最近 30 天的備份
+# Keep last 30 days of backups
 find $BACKUP_DIR -name "db_backup_*.sql.gz" -mtime +30 -delete
 ```
 
-設定每日自動備份：
+Setup daily automatic backup:
 ```bash
 0 2 * * * /path/to/backup-db.sh
 ```
 
-#### 檔案備份
+#### File Backup
 
 ```bash
-# 備份整個專案（排除 vendor 和 node_modules）
+# Backup entire project (exclude vendor and node_modules)
 tar -czf erp-backup-$(date +%Y%m%d).tar.gz \
     --exclude='vendor' \
     --exclude='node_modules' \
@@ -1600,13 +1600,13 @@ tar -czf erp-backup-$(date +%Y%m%d).tar.gz \
     /var/www/erp-dev
 ```
 
-### 監控與日誌
+### Monitoring & Logging
 
-#### 應用程式日誌
+#### Application Logs
 
-日誌位置：`storage/logs/laravel.log`
+Log location: `storage/logs/laravel.log`
 
-設定日誌輪替 `/etc/logrotate.d/erp`：
+Setup log rotation `/etc/logrotate.d/erp`:
 
 ```
 /var/www/erp-dev/storage/logs/*.log {
@@ -1620,9 +1620,9 @@ tar -czf erp-backup-$(date +%Y%m%d).tar.gz \
 }
 ```
 
-#### 效能監控
+#### Performance Monitoring
 
-安裝 Laravel Telescope (開發環境)：
+Install Laravel Telescope (development):
 
 ```bash
 composer require laravel/telescope --dev
@@ -1630,129 +1630,129 @@ php artisan telescope:install
 php artisan migrate
 ```
 
-在 `.env` 中啟用：
+Enable in `.env`:
 ```env
 TELESCOPE_ENABLED=true
 ```
 
-存取：`https://erp.example.com/telescope`
+Access: `https://erp.example.com/telescope`
 
 ---
 
-## 後續開發計劃
+## Future Development Roadmap
 
-### 短期目標 (1-3 個月)
+### Short-term Goals (1-3 months)
 
-#### 1. 出勤模組增強
-- [ ] 實作排程自動計算每日出勤摘要
-- [ ] 加入遲到/早退規則設定
-- [ ] 支援彈性工時制度
-- [ ] 整合實體打卡機 API
-- [ ] 異常出勤通知機制
+#### 1. Attendance Module Enhancement
+- [ ] Implement scheduled automatic daily attendance summary calculation
+- [ ] Add late/early leave rule settings
+- [ ] Support flexible work schedule system
+- [ ] Integrate physical clock device API
+- [ ] Abnormal attendance notification mechanism
 
-#### 2. 請假模組完善
-- [ ] 實作請假審核通知 (Email/Line)
-- [ ] 支援代理人設定
-- [ ] 批次核准功能
-- [ ] 請假統計報表
-- [ ] 特休自動結轉
+#### 2. Leave Module Improvement
+- [ ] Implement leave approval notifications (Email/Line)
+- [ ] Support delegate settings
+- [ ] Batch approval functionality
+- [ ] Leave statistics reports
+- [ ] Automatic annual leave carryover
 
-#### 3. 薪資計算功能
-- [ ] 建立薪資計算引擎
-- [ ] 整合出勤、請假資料
-- [ ] 支援各類加給/扣款項目
-- [ ] 勞健保自動計算
-- [ ] 所得稅自動扣繳
-- [ ] 薪資單產生與發送
+#### 3. Payroll Calculation Features
+- [ ] Build payroll calculation engine
+- [ ] Integrate attendance and leave data
+- [ ] Support various allowance/deduction items
+- [ ] Automatic labor/health insurance calculation
+- [ ] Automatic income tax withholding
+- [ ] Payslip generation and distribution
 
-#### 4. 權限系統優化
-- [ ] 資料層級權限 (Row-Level Security)
-- [ ] 審核流程引擎
-- [ ] 委派權限功能
-- [ ] 權限稽核日誌
+#### 4. Permission System Optimization
+- [ ] Row-level security (data-level permissions)
+- [ ] Approval workflow engine
+- [ ] Delegation permission functionality
+- [ ] Permission audit logs
 
-### 中期目標 (3-6 個月)
+### Mid-term Goals (3-6 months)
 
-#### 5. 招募管理模組
-- [ ] 職缺發佈管理
-- [ ] 應徵者資料庫
-- [ ] 面試排程系統
-- [ ] 錄取流程追蹤
+#### 5. Recruitment Management Module
+- [ ] Job posting management
+- [ ] Applicant database
+- [ ] Interview scheduling system
+- [ ] Hiring process tracking
 
-#### 6. 訓練發展模組
-- [ ] 訓練課程管理
-- [ ] 員工受訓記錄
-- [ ] 證照管理
-- [ ] 訓練需求分析
+#### 6. Training & Development Module
+- [ ] Training course management
+- [ ] Employee training records
+- [ ] Certification management
+- [ ] Training needs analysis
 
-#### 7. 績效管理模組
-- [ ] 目標設定 (OKR/KPI)
-- [ ] 定期考核流程
-- [ ] 360 度評估
-- [ ] 績效面談記錄
+#### 7. Performance Management Module
+- [ ] Goal setting (OKR/KPI)
+- [ ] Regular review process
+- [ ] 360-degree assessment
+- [ ] Performance interview records
 
-#### 8. 報表系統
-- [ ] 人力統計報表
-- [ ] 出勤分析報表
-- [ ] 薪資成本分析
-- [ ] 自訂報表建立器
-- [ ] 匯出 Excel/PDF
+#### 8. Reporting System
+- [ ] HR statistics reports
+- [ ] Attendance analysis reports
+- [ ] Payroll cost analysis
+- [ ] Custom report builder
+- [ ] Export to Excel/PDF
 
-### 長期目標 (6-12 個月)
+### Long-term Goals (6-12 months)
 
-#### 9. 行動應用
-- [ ] 開發 iOS App
-- [ ] 開發 Android App
-- [ ] 行動打卡功能
-- [ ] 推播通知
+#### 9. Mobile Applications
+- [ ] Develop iOS App
+- [ ] Develop Android App
+- [ ] Mobile clock in/out functionality
+- [ ] Push notifications
 
-#### 10. 進階功能
-- [ ] AI 履歷篩選
-- [ ] 排班優化演算法
-- [ ] 離職風險預測
-- [ ] 薪資市場分析
+#### 10. Advanced Features
+- [ ] AI resume screening
+- [ ] Shift optimization algorithms
+- [ ] Turnover risk prediction
+- [ ] Salary market analysis
 
-#### 11. 整合功能
-- [ ] 與會計系統整合
-- [ ] 與門禁系統整合
-- [ ] 與 Google Calendar 整合
-- [ ] 與 Slack/Teams 整合
+#### 11. Integration Features
+- [ ] Integrate with accounting systems
+- [ ] Integrate with access control systems
+- [ ] Integrate with Google Calendar
+- [ ] Integrate with Slack/Teams
 
-#### 12. 多國化支援
-- [ ] 多語系介面
-- [ ] 多時區支援
-- [ ] 各國勞動法規適配
-- [ ] 多幣別薪資
+#### 12. Multi-language Support
+- [ ] Multi-language interface
+- [ ] Multi-timezone support
+- [ ] Adapt to labor laws in different countries
+- [ ] Multi-currency payroll
 
-### 技術債務與優化
+### Technical Debt & Optimization
 
-#### 效能優化
-- [ ] 資料庫查詢優化
-- [ ] Redis 快取策略
-- [ ] 前端資源最小化
-- [ ] CDN 部署
+#### Performance Optimization
+- [ ] Database query optimization
+- [ ] Redis caching strategy
+- [ ] Frontend resource minification
+- [ ] CDN deployment
 
-#### 程式碼品質
-- [ ] 提高測試覆蓋率至 80%+
-- [ ] 重構遺留程式碼
-- [ ] 建立 CI/CD Pipeline
-- [ ] 自動化部署流程
+#### Code Quality
+- [ ] Increase test coverage to 80%+
+- [ ] Refactor legacy code
+- [ ] Build CI/CD Pipeline
+- [ ] Automated deployment workflow
 
-#### 文件完善
-- [ ] API 文件自動生成
-- [ ] 使用者操作手冊
-- [ ] 開發者指南
-- [ ] 架構設計文件
+#### Documentation Improvement
+- [ ] API documentation auto-generation
+- [ ] User operation manual
+- [ ] Developer guide
+- [ ] Architecture design documentation
 
 ---
 
-## 附錄
+## Appendices
 
-### A. 常見問題 (FAQ)
+### A. Frequently Asked Questions (FAQ)
 
-**Q1: 如何重設管理員密碼？**
+**Q1: How to reset admin password?**
 
-A: 使用 tinker 重設：
+A: Use tinker to reset:
 ```bash
 php artisan tinker
 >>> $user = User::where('email', 'admin@erp.local')->first();
@@ -1760,9 +1760,9 @@ php artisan tinker
 >>> $user->save();
 ```
 
-**Q2: 如何清除快取？**
+**Q2: How to clear cache?**
 
-A: 執行清除指令：
+A: Run clear commands:
 ```bash
 php artisan cache:clear
 php artisan config:clear
@@ -1770,65 +1770,65 @@ php artisan route:clear
 php artisan view:clear
 ```
 
-**Q3: 測試環境資料如何重置？**
+**Q3: How to reset test environment data?**
 
-A: 使用 migrate:fresh：
+A: Use migrate:fresh:
 ```bash
 php artisan migrate:fresh --seed
 ```
 
-**Q4: 如何新增自訂權限？**
+**Q4: How to add custom permissions?**
 
-A: 在 `AccessControlSeeder` 中新增，然後重新 seed：
+A: Add in `AccessControlSeeder` and re-seed:
 ```php
 Permission::create([
     'code' => 'custom.permission',
-    'name' => '自訂權限',
+    'name' => 'Custom Permission',
     'module' => 'custom',
 ]);
 ```
 
-**Q5: 如何修改預設公司資料？**
+**Q5: How to modify default company data?**
 
-A: 編輯 `CompanyDataSeeder.php` 後重新執行：
+A: Edit `CompanyDataSeeder.php` and re-run:
 ```bash
 php artisan db:seed --class=CompanyDataSeeder
 ```
 
-### B. 資料字典
+### B. Data Dictionary
 
-#### 員工狀態碼
-- `active`: 在職
-- `on_leave`: 留職停薪
-- `resigned`: 已離職
-- `retired`: 退休
-- `terminated`: 解僱
+#### Employee Status Codes
+- `active`: Active
+- `on_leave`: On leave
+- `resigned`: Resigned
+- `retired`: Retired
+- `terminated`: Terminated
 
-#### 請假狀態碼
-- `pending`: 待審核
-- `approved`: 已核准
-- `rejected`: 已拒絕
-- `cancelled`: 已取消
+#### Leave Status Codes
+- `pending`: Pending approval
+- `approved`: Approved
+- `rejected`: Rejected
+- `cancelled`: Cancelled
 
-#### 薪資狀態碼
-- `draft`: 草稿
-- `processing`: 計算中
-- `completed`: 已完成
-- `paid`: 已發放
-- `cancelled`: 已取消
+#### Payroll Status Codes
+- `draft`: Draft
+- `processing`: Processing
+- `completed`: Completed
+- `paid`: Paid
+- `cancelled`: Cancelled
 
-#### 打卡類型
-- `check-in`: 上班打卡
-- `check-out`: 下班打卡
-- `break-out`: 休息開始
-- `break-in`: 休息結束
+#### Clock Types
+- `check-in`: Check in
+- `check-out`: Check out
+- `break-out`: Break start
+- `break-in`: Break end
 
-### C. 保險級距對照表
+### C. Insurance Bracket Reference Table
 
-參考來源：勞動部公告（2023 年）
+Reference: Ministry of Labor announcement (2023)
 
-| 級距 | 月投保薪資 | 勞保費（員工） | 健保費（員工） |
-|------|-----------|---------------|---------------|
+| Grade | Monthly Insured Salary | Labor Insurance (Employee) | Health Insurance (Employee) |
+|-------|------------------------|----------------------------|------------------------------|
 | 1 | 27,470 | 687 | 412 |
 | 2 | 28,800 | 720 | 432 |
 | 3 | 30,300 | 758 | 455 |
@@ -1836,40 +1836,39 @@ php artisan db:seed --class=CompanyDataSeeder
 | 5 | 33,300 | 833 | 500 |
 | ... | ... | ... | ... |
 
-完整資料由 `InsuranceBracketSeeder` 填充。
+Complete data seeded by `InsuranceBracketSeeder`.
 
-### D. 職級對照表
+### D. Position Level Reference Table
 
-| 代碼 | 名稱 | 等級 |
-|------|------|------|
-| P01 | 總裁 | 1 |
-| P02 | 總經理 | 2 |
-| P03 | 副總經理 | 3 |
-| P04 | 協理 | 4 |
-| P05 | 部長/經理 | 5 |
-| P06 | 副理 | 6 |
-| P07 | 科長/課長 | 7 |
-| P08 | 主任 | 8 |
-| P09 | 資深專員 | 9 |
-| P10 | 專員/職員 | 10 |
-| P11 | 助理 | 11 |
+| Code | Name | Level |
+|------|------|-------|
+| P01 | Chairman | 1 |
+| P02 | General Manager | 2 |
+| P03 | Vice General Manager | 3 |
+| P04 | Assistant General Manager | 4 |
+| P05 | Director/Manager | 5 |
+| P06 | Deputy Manager | 6 |
+| P07 | Section Chief/Team Leader | 7 |
+| P08 | Supervisor | 8 |
+| P09 | Senior Specialist | 9 |
+| P10 | Specialist/Staff | 10 |
+| P11 | Assistant | 11 |
 
-### E. 聯絡資訊
+### E. Contact Information
 
-- **專案負責人**: [Your Name]
+- **Project Lead**: [Your Name]
 - **Email**: [your.email@example.com]
-- **文件版本**: 1.0.0
-- **最後更新**: 2025-10-22
+- **Documentation Version**: 1.0.0
+- **Last Updated**: 2025-10-22
 
 ---
 
-## 變更歷史
+## Change History
 
-| 版本 | 日期 | 說明 |
-|------|------|------|
-| 1.0.0 | 2025-10-22 | 初始版本，包含完整專案文件 |
+| Version | Date | Description |
+|---------|------|-------------|
+| 1.0.0 | 2025-10-22 | Initial version with complete project documentation |
 
 ---
 
-**文件結束**
-
+**End of Documentation**
