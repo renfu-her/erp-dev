@@ -37,12 +37,12 @@
                                 <span class="badge {{ $leaveType->affects_attendance ? 'bg-info text-dark' : 'bg-secondary' }}">{{ $leaveType->affects_attendance ? 'Yes' : 'No' }}</span>
                             </td>
                             <td class="text-end">
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a href="{{ route('backend.leave-types.edit', $leaveType) }}" class="btn btn-outline-primary">編輯</a>
-                                    <form action="{{ route('backend.leave-types.destroy', $leaveType) }}" method="POST" onsubmit="return confirm('確認刪除假別 {{ $leaveType->name }}？');">
+                                <div class="btn-group-separated">
+                                    <a href="{{ route('backend.leave-types.edit', $leaveType) }}" class="btn btn-outline-primary btn-sm">編輯</a>
+                                    <form action="{{ route('backend.leave-types.destroy', $leaveType) }}" method="POST" onsubmit="return confirm('確認刪除假別 {{ $leaveType->name }}？');" class="d-inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-outline-danger">刪除</button>
+                                        <button type="submit" class="btn btn-outline-danger btn-sm">刪除</button>
                                     </form>
                                 </div>
                             </td>
