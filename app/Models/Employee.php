@@ -127,6 +127,22 @@ class Employee extends Model
         return $this->hasMany(PayrollEntry::class);
     }
 
+    public function salaries(): HasMany
+    {
+        return $this->hasMany(EmployeeSalary::class);
+    }
+
+    /**
+     * Resolve the effective salary record for a given date (inclusive).
+     */
+    public function effectiveSalaryFor(\DateTimeInterface $onDate)
+    {
+        return $this->salaries()
+            ->where('starts_on', '<=', $onDate)
+            ->orderByDesc('starts_on')
+            ->first();
+    }
+
     public function performanceReviews(): HasMany
     {
         return $this->hasMany(PerformanceReview::class);
