@@ -46,7 +46,7 @@
                                     @foreach ($brackets as $bracket)
                                         <tr>
                                             <td class="fw-semibold">{{ $bracket->label }}</td>
-                                            <td class="text-end">{{ number_format($bracket->grade) }} 元</td>
+                                            <td class="text-end">{{ number_format($bracket->salary) }} 元</td>
                                             <td class="text-end">
                                                 {{ $formatInteger($bracket->labor_employee_local) }}
                                             </td>
@@ -87,7 +87,7 @@
                                     @foreach ($brackets as $bracket)
                                         <tr>
                                             <td class="fw-semibold">{{ $bracket->label }}</td>
-                                            <td class="text-end">{{ number_format($bracket->grade) }} 元</td>
+                                            <td class="text-end">{{ number_format($bracket->salary) }} 元</td>
                                             <td class="text-end">
                                                 {{ $formatInteger($bracket->health_employee) }}
                                             </td>

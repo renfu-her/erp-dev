@@ -33,12 +33,16 @@ class InsuranceSchedule
             return [
                 'label' => $bracket->label,
                 'grade' => $bracket->grade,
+                'salary' => $bracket->salary,
                 'labor_employee_local' => $bracket->labor_employee_local,
                 'labor_employer_local' => $bracket->labor_employer_local,
                 'labor_employee_foreign' => $bracket->labor_employee_foreign,
                 'labor_employer_foreign' => $bracket->labor_employer_foreign,
                 'health_employee' => $bracket->health_employee,
                 'health_employer' => $bracket->health_employer,
+                'occupational_employee' => $bracket->occupational_employee,
+                'occupational_employer' => $bracket->occupational_employer,
+                'labor_pension_6_percent' => $bracket->labor_pension_6_percent,
                 'pension_employer' => $bracket->pension_employer,
             ];
         })->values()->all();
@@ -83,17 +87,22 @@ class InsuranceSchedule
             }
 
             $grade = self::extractGrade($label);
+            $salary = self::toInt($row[1] ?? null);
 
             $parsed[] = [
                 'label' => $label,
                 'grade' => $grade,
-                'labor_employee_local' => self::toInt($row[1] ?? null),
-                'labor_employer_local' => self::toInt($row[2] ?? null),
-                'labor_employee_foreign' => self::toInt($row[3] ?? null),
-                'labor_employer_foreign' => self::toInt($row[4] ?? null),
+                'salary' => $salary,
+                'labor_employee_local' => self::toInt($row[2] ?? null),
+                'labor_employer_local' => self::toInt($row[3] ?? null),
+                'labor_employee_foreign' => self::toInt($row[2] ?? null),
+                'labor_employer_foreign' => self::toInt($row[3] ?? null),
                 'health_employee' => self::toInt($row[5] ?? null),
                 'health_employer' => self::toInt($row[6] ?? null),
-                'pension_employer' => self::toInt($row[7] ?? null),
+                'occupational_employee' => null, // 職保由雇主全額負擔
+                'occupational_employer' => self::toInt($row[8] ?? null),
+                'labor_pension_6_percent' => self::toInt($row[9] ?? null),
+                'pension_employer' => null, // 舊制退休金，由公司政策決定
             ];
         }
 
@@ -143,7 +152,7 @@ class InsuranceSchedule
         }
 
         foreach ($this->brackets as $bracket) {
-            if ($salary <= $bracket['grade']) {
+            if (isset($bracket['salary']) && $salary <= $bracket['salary']) {
                 return $bracket;
             }
         }
