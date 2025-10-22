@@ -49,6 +49,83 @@ Visit http://localhost:8000
 - RESTful API architecture
 - PHPUnit test coverage
 
+## System Functionality Overview
+
+### Dashboard & Navigation
+- Unified `layouts.app` layout with sticky topbar, collapsible sidebar, and responsive shell
+- Backend dashboard (`/backend`) summarising company counts, employee statistics, attendance alerts, and approval queues
+- Frontend employee portal (`/frontend`) with quick access to personal attendance, leave balances, and HR announcements
+
+### Authentication & Access Control
+- Session-based authentication with Laravel Sanctum API support
+- Role/permission seeding via `AccessControlSeeder`
+- Middleware `EnsureHasPermission` enforcing granular permissions (`backend.access`, `leave.manage`, etc.)
+- Company-level scoping through `role_scopes` for multi-tenant data segregation
+
+### Company & Organization Management
+- `backend/companies` CRUD for company profiles, status toggling, and contact information
+- `backend/departments` hierarchy management (parent-child departments, department lead assignment)
+- `backend/positions` with managerial flag, reference salary, insurance grade, level mapping
+- `backend/employees` comprehensive employee roster: filtering, blocking/unblocking, role assignment, export options, and nested tabs for profile sections
+
+### Attendance Management
+- Frontend check-in/check-out endpoints (`/frontend/attendance/check-in`, `/frontend/attendance/check-out`)
+- Backend attendance console with manual entry, device tagging, and audit trails
+- Attendance summaries (`attendance_summaries` table) with late/early leave indicators
+- Attendance devices registry (`AttendanceDevice` model) for hardware integration
+
+### Leave Management
+- Leave types index (`backend/leave-types`) supporting quota configuration, approval requirements, attendance impact toggle
+- Leave requests workflow (`backend/leave-requests`) with status transitions (pending/approved/rejected/cancelled)
+- Employee self-service leave form (`frontend/hr/leave-request`) using form requests for validation
+- Leave balances (`LeaveBalance` model) seeded with annual allowances per employee
+
+### Payroll & Compensation
+- Payroll overview (`backend/payroll`) covering period setup, payroll runs, and entry summaries
+- Salary components definitions (earnings/deductions) with taxability flags
+- Insurance bracket management (`backend/insurance-brackets`) aligned with Ministry of Labor tables
+- Support classes (`InsuranceSchedule`, `InsuranceContributionSummary`) for contribution calculations
+
+### HR Supporting Modules
+- Position levels reference (`PositionLevelSeeder`) and salary grading
+- Reward & performance tracking models (`RewardRecord`, `PerformanceReview`)
+- Employment contracts, addresses, contacts stored via dedicated models for data normalization
+- Activity log (`ActivityLog` model) capturing CRUD operations across backend modules
+
+### Frontend Employee Portal
+- Attendance widget showing recent logs and check-in/out actions
+- Leave summary cards with balances and outstanding approvals
+- Responsive Bootstrap 5 interface with custom styling in `public/css/app.css`
+- jQuery-powered interactions for modal forms, confirmations, and AJAX submissions
+
+### Notifications & Workflow (Planned/partial)
+- Approval request model (`ApprovalRequest`) backing leave and overtime flows
+- Scheduler-ready artisan command structure for future automation (`app/Console/Commands`)
+- Supervisor-ready queue scaffolding for background jobs (`queue:work` configuration guidance in docs)
+
+### API Endpoints
+- RESTful routes under `routes/api.php` for employees, attendance logs, leave requests, payroll resources
+- Sanctum token issuance via `/api/login` supporting mobile/3rd-party integration
+- Consistent JSON error structure with validation details (`422` responses)
+
+### Testing & Quality Assurance
+- PHPUnit feature tests grouped under `tests/Feature/Backend` and `tests/Feature/Frontend`
+- `CreatesApplication` trait bootstrapping Laravel testing environment
+- Laravel Pint configuration ensuring PSR-12 compliance
+- Sample tests covering employee backend access, blocking, and route protections
+
+### Seeded Demo Data
+- Admin account (`admin@erp.local / password`) with System Owner role
+- Frontend demo users (employee1, employee2, manager) mapped to Alpha Manufacturing & Beta Logistics sample companies
+- `CompanyDataSeeder` provisioning companies, departments, positions, and role assignments
+- Holiday seeders (`Holiday2024Seeder`, `Holiday2025Seeder`) populating calendar data for attendance/leave modules
+
+### Configuration & Extensibility
+- All runtime flags managed via `config/` directory (queue, mail, cache, session)
+- Environment-specific `.env` usage with recommended production tuning (config caching, route caching)
+- Modular controller organization (`app/Http/Controllers/Backend` and `Frontend`) for feature separation
+- Support for additional modules via documented roadmap in README & `PROJECT_DOCUMENTATION.md`
+
 ## Test Accounts
 
 ### Backend Admin
